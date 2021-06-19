@@ -1,0 +1,85 @@
+! 系统提示音
+! *visualBell:BOOLEAN
+
+! 字体 输入法
+xterm.utf8: true
+xterm*utf8Title:true
+xterm*faceName:Consolas:antialias=True:pixelsize=12
+xterm*faceNameDoublesize:Source Han Sans SC:antialias=True:pixelsize=12
+xterm*locale:zh_CN.UTF-8
+xterm*inputMethod:ibus
+
+! 保证每一个都是 login shell
+xterm*loginshell: true
+
+! 保存行数
+xterm*saveLines: 4096
+
+! alt mate 键启动
+xterm*metaSendsEscape: true
+! xterm*VT100.metaSendsEscape: true
+xterm*eightBitInput: false
+! 退格键与 emacs ^H 键冲突 转换为 ^?
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes: erase ^?
+
+! 剪切板
+xterm*selectToClipboard: true
+xterm*VT100*selectToClipboard: true
+
+! 快捷键绑定
+XTerm*vt100.translations: #override \n\
+						  Super <Key>S: maximize() \n\
+						  Super <Key>R: restore() \n\
+						  Alt <Key>W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  Ctrl <Key>Y: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  Ctrl <Key>+:larger-vt-font() \n\
+               			  Ctrl <Key>-:smaller-vt-font() \n\
+						  Ctrl <Key>V:scroll-forw(1,halfpage,m) \n\
+						  Alt <Key>V:scroll-back(1,halfpage,m) \n\
+						  Alt <Key>\>: scroll-to(end) \n\
+						  Alt <Key>\<: scroll-to(begin) \n\
+						  Alt <Key>Return:fullscreen() \n\
+						  !Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
+						  !Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
+						  !Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
+
+! 禁止全屏
+xterm*fullscreen: never
+xterm.omitTranslation: fullscreen
+
+! 前/背景色
+xterm*background:black
+xterm*foreground:gray
+! 所有 Xlib 程序颜色
+! *background:black
+! *foreground:green
+! 动态颜色
+xterm*dynamicColors:true
+! 下划线颜色
+XTerm*VT100*colorULMode: on
+XTerm*VT100*underLine: on
+XTerm*VT100*colorUL: red
+! 打开颜色模式
+! XTerm.VT100*dynamicColors: O
+
+! 鼠标光标颜色
+xterm*cursorColor:yellow
+! 鼠标样式 XTerm left_ptr bogosity
+xterm*pointerShape:XTerm
+
+! 行间距
+xterm*scaleHeight: 1.01
+
+! 初始窗口大小
+xterm.geometry: 80x50
+
+! 滚动条
+xterm*rightScrollBar: false
+xterm*ScrollBar: false
+
+! 停止输出不跳到底部
+xterm*scrollTtyOutput: false
+
+! 双击选择整改URL
+xterm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
