@@ -4,10 +4,28 @@
 ! 字体 输入法
 xterm.utf8: true
 xterm*utf8Title:true
-xterm*faceName:Consolas:antialias=True:pixelsize=12
-xterm*faceNameDoublesize:Source Han Sans SC:antialias=True:pixelsize=12
+xterm*faceName:Consolas!:antialias=True:pixelsize=14
+xterm*faceNameDoublesize:Source Han Sans SC!:antialias=True:pixelsize=14
 xterm*locale:zh_CN.UTF-8
 xterm*inputMethod:ibus
+! xterm*vt100.font: Default
+xterm*faceSize: 12
+xterm*renderFont: true
+
+! VT Font Menu: Unreadable
+xterm*faceSize1: 8
+! VT font menu: Tiny
+xterm*faceSize2: 10
+! VT font menu: Medium
+xterm*faceSize3: 12
+! VT font menu: Large
+xterm*faceSize4: 16
+! VT font menu: Huge
+xterm*faceSize5: 22
+
+XTerm*borderWidth: 0
+
+xterm*vt100.allowWindowOps: true
 
 ! 保证每一个都是 login shell
 xterm*loginshell: true
@@ -28,18 +46,22 @@ xterm*selectToClipboard: true
 xterm*VT100*selectToClipboard: true
 
 ! 快捷键绑定
-XTerm*vt100.translations: #override \n\
-						  Super <Key>S: maximize() \n\
-						  Super <Key>R: restore() \n\
-						  Alt <Key>W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
-						  Ctrl <Key>Y: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
-						  Ctrl <Key>+:larger-vt-font() \n\
-               			  Ctrl <Key>-:smaller-vt-font() \n\
-						  Ctrl <Key>V:scroll-forw(1,halfpage,m) \n\
-						  Alt <Key>V:scroll-back(1,halfpage,m) \n\
-						  Alt <Key>\>: scroll-to(end) \n\
-						  Alt <Key>\<: scroll-to(begin) \n\
-						  Alt <Key>Return:fullscreen() \n\
+xterm*vt100.translations: #override \
+						  Super <Key> S: maximize() \n\
+						  Super <Key> R: restore() \n\
+						  Alt <Key> W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  Ctrl <Key> Y: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  Ctrl <Key> V: scroll-forw(1,halfpage,m) \n\
+						  Alt <Key> V: scroll-back(1,halfpage,m) \n\
+						  Alt <Key> \>: scroll-to(end) \n\
+						  Alt <Key> \<: scroll-to(begin) \n\
+						  ! Ctrl <Key> minus: smaller-vt-font() \n\
+  						  ! Ctrl <Key> plus: larger-vt-font() \n\
+						  ! Ctrl <Key> =: set-vt-font(d) \n\
+						  Alt <Key> -: smaller-vt-font() \n\
+  						  Alt <Key> +: larger-vt-font() \n\
+						  Alt <Key> =: set-vt-font(d) \n\
+						  Alt <Key> Return:fullscreen() \n\
 						  !Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
 						  !Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
 						  !Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
@@ -80,6 +102,11 @@ xterm*ScrollBar: false
 
 ! 停止输出不跳到底部
 xterm*scrollTtyOutput: false
+
+! Only select text
+xterm*highlightSelection: true
+! Remove trailing spaces
+xterm*trimSelection: true
 
 ! 双击选择整改URL
 xterm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
