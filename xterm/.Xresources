@@ -1,7 +1,7 @@
-! 系统提示音
+! sys ball
 ! *visualBell:BOOLEAN
 
-! 字体 输入法
+! font input
 xterm.utf8: true
 xterm*utf8Title:true
 xterm*faceName:Consolas!:antialias=True:pixelsize=14
@@ -27,25 +27,25 @@ XTerm*borderWidth: 0
 
 xterm*vt100.allowWindowOps: true
 
-! 保证每一个都是 login shell
+! login shell
 xterm*loginshell: true
 
-! 保存行数
+! save line
 xterm*saveLines: 4096
 
-! alt mate 键启动
+! alt mate key
 xterm*metaSendsEscape: true
 ! xterm*VT100.metaSendsEscape: true
 xterm*eightBitInput: false
-! 退格键与 emacs ^H 键冲突 转换为 ^?
+! backspace and emacs ^H conflict，switch ^?
 XTerm.vt100.backarrowKey: false
 XTerm.ttyModes: erase ^?
 
-! 剪切板
+! clipboard
 xterm*selectToClipboard: true
 xterm*VT100*selectToClipboard: true
 
-! 快捷键绑定
+! keybinding
 xterm*vt100.translations: #override \
 						  Super <Key> S: maximize() \n\
 						  Super <Key> R: restore() \n\
@@ -66,47 +66,44 @@ xterm*vt100.translations: #override \
 						  !Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
 						  !Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
 
-! 禁止全屏
+! fullscreen
 xterm*fullscreen: never
 xterm.omitTranslation: fullscreen
 
-! 前/背景色
+! fg and bg color
 xterm*background:black
 xterm*foreground:gray
-! 所有 Xlib 程序颜色
+! all Xlib color
 ! *background:black
 ! *foreground:green
-! 动态颜色
+! dynamic color
 xterm*dynamicColors:true
-! 下划线颜色
+! under line color
 XTerm*VT100*colorULMode: on
 XTerm*VT100*underLine: on
 XTerm*VT100*colorUL: red
-! 打开颜色模式
-! XTerm.VT100*dynamicColors: O
 
-! 鼠标光标颜色
+! mouse cursor color
 xterm*cursorColor:yellow
-! 鼠标样式 XTerm left_ptr bogosity
+! mouse style, XTerm left_ptr bogosity
 xterm*pointerShape:XTerm
 
-! 行间距
+! row spacing
 xterm*scaleHeight: 1.01
 
-! 初始窗口大小
+! init window size
 xterm.geometry: 80x50
 
-! 滚动条
+! scroll bar
 xterm*rightScrollBar: false
 xterm*ScrollBar: false
-
-! 停止输出不跳到底部
+! stop output does not jump to bottom
 xterm*scrollTtyOutput: false
 
-! Only select text
+! only select text
 xterm*highlightSelection: true
-! Remove trailing spaces
+! remove trailing spaces
 xterm*trimSelection: true
 
-! 双击选择整改URL
+! double click select URL
 xterm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
