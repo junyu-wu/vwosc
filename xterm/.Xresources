@@ -8,9 +8,11 @@ xterm*faceName:Consolas!:antialias=True:pixelsize=14
 xterm*faceNameDoublesize:Source Han Sans SC!:antialias=True:pixelsize=14
 xterm*locale:zh_CN.UTF-8
 xterm*inputMethod:ibus
-! xterm*vt100.font: Default
+
 xterm*faceSize: 12
 xterm*renderFont: true
+
+xterm*vt100.font: 12
 
 ! VT Font Menu: Unreadable
 xterm*faceSize1: 8
@@ -19,9 +21,17 @@ xterm*faceSize2: 10
 ! VT font menu: Medium
 xterm*faceSize3: 12
 ! VT font menu: Large
-xterm*faceSize4: 16
+xterm*faceSize4: 14
 ! VT font menu: Huge
-xterm*faceSize5: 22
+xterm*faceSize5: 18
+
+! xterm*vt100.font1: 8
+! xterm*vt100.font2: 10
+! xterm*vt100.font3: 12
+! xterm*vt100.font4: 14
+! xterm*vt100.font5: 18
+! xterm*vt100.font6: 24
+! xterm*vt100.font7: 32
 
 XTerm*borderWidth: 0
 
@@ -46,7 +56,7 @@ xterm*selectToClipboard: true
 xterm*VT100*selectToClipboard: true
 
 ! keybinding
-xterm*vt100.translations: #override \
+xterm*vt100.translations: #override \n\
 						  Super <Key> S: maximize() \n\
 						  Super <Key> R: restore() \n\
 						  Alt <Key> W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
@@ -55,11 +65,11 @@ xterm*vt100.translations: #override \
 						  Alt <Key> V: scroll-back(1,halfpage,m) \n\
 						  Alt <Key> \>: scroll-to(end) \n\
 						  Alt <Key> \<: scroll-to(begin) \n\
-						  ! Ctrl <Key> minus: smaller-vt-font() \n\
-  						  ! Ctrl <Key> plus: larger-vt-font() \n\
-						  ! Ctrl <Key> =: set-vt-font(d) \n\
-						  Alt <Key> -: smaller-vt-font() \n\
+  						  Ctrl <Key> +: larger-vt-font() \n\
+						  Ctrl <Key> -: smaller-vt-font() \n\
+						  Ctrl <Key> =: set-vt-font(d) \n\
   						  Alt <Key> +: larger-vt-font() \n\
+						  Alt <Key> -: smaller-vt-font() \n\
 						  Alt <Key> =: set-vt-font(d) \n\
 						  Alt <Key> Return:fullscreen() \n\
 						  !Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
