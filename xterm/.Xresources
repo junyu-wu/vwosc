@@ -1,7 +1,7 @@
-! sys ball
+! sys bell
 ! *visualBell:BOOLEAN
 
-! font input
+! font and input
 xterm.utf8: true
 xterm*utf8Title:true
 xterm*faceName:Consolas!:antialias=True:pixelsize=14
