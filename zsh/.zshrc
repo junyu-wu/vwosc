@@ -77,7 +77,8 @@ echo -e -n "\x1b[\x36 q" # changes to steady bar
 
 ## xterm
 export XTERM_HOME=$PREFIX/xterm
-export PATH=$PATH:$XTERM_HOME/bin
+export XTERMCONTROL_HOME=$PREFIX/xtermcontrol
+export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
 if [ -f "$HOME/.Xresources" ] ; then
 	xrdb -merge $HOME/.Xresources
