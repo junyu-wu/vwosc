@@ -66,6 +66,27 @@ if [[ -n $SSH_CONNECTION ]]; then
 	fi
 fi
 
+## terminal
+# echo -e -n "\x1b[\x30 q" # changes to blinking block
+# echo -e -n "\x1b[\x31 q" # changes to blinking block also
+# echo -e -n "\x1b[\x32 q" # changes to steady block
+# echo -e -n "\x1b[\x33 q" # changes to blinking underline
+# echo -e -n "\x1b[\x34 q" # changes to steady underline
+# echo -e -n "\x1b[\x35 q" # changes to blinking bar
+echo -e -n "\x1b[\x36 q" # changes to steady bar
+
+## xterm
+export XTERM_HOME=$PREFIX/xterm
+export PATH=$PATH:$XTERM_HOME/bin
+
+if [ -f "$HOME/.Xresources" ] ; then
+	xrdb -merge $HOME/.Xresources
+fi
+
+## tmux
+export TMUX_HOME=$PREFIX/tmux
+export PATH=$PATH:$TMUX_HOME/bin
+
 ## ibus
 export XMODIFIERS=@im=ibus
 # export XIM="ibus"
@@ -76,6 +97,7 @@ export XMODIFIERS=@im=ibus
 ## languages config
 ## gcc
 export CC=/usr/bin/gcc
+
 ## ruby
 ## rvm
 export RVM_HOME=$PREFIX/rvm
@@ -148,19 +170,7 @@ if [ -d $NMAP_HOME ] ; then
     PATH=$PATH:$NMAP_HOME/bin
 fi
 
-## xterm
-export XTERM_HOME=$PREFIX/xterm
-export PATH=$PATH:$XTERM_HOME/bin
-
-if [ -f "$HOME/.Xresources" ] ; then
-	xrdb -merge $HOME/.Xresources
-fi
-
-## tmux
-export TMUX_HOME=$PREFIX/tmux
-export PATH=$PATH:$TMUX_HOME/bin
-
-## POSTGRESQL
+## postgresql
 export POSTGRESQL_HOME=$PREFIX/pgsql
 if [ -d "$POSTGRESQL_HOME" ] ; then
     PATH=$PATH:$POSTGRESQL_HOME/bin
@@ -168,6 +178,8 @@ if [ -d "$POSTGRESQL_HOME" ] ; then
 	export PGHOST=/tmp
 fi
 
+# pgsql_server
+# start/stop/restart pgsql server
 function pgsql_server ()
 {
 	if [ "$1" = "-start" ]
@@ -271,7 +283,7 @@ if hash guix 2>/dev/null; then
 fi
 
 ## wine
-export WINE_ENV_HOME=$HOME/.winenv
+export WINE_ENV_HOME=$HOME/.wine
 
 # winesetup
 # wine command
@@ -453,22 +465,18 @@ alias xhkeyl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
 alias msftidy="$MSFHOME/tools/dev/msftidy.rb"
 
 # wine alias
-alias wine32="wine32Func"
-alias wine64="wine64Func"
+alias wine32="winesetup"
 alias wexe32="wine32Exec"
 alias wexe32cn="wine32ExecForZH_CN"
 
 alias wechat="wexe32 'im/wx' wechat"
-alias dding="wexe32 'im/dd' DingTalk"
-alias cdding="wexe32cn 'im/dd' DingTalk"
+alias dding="wexe32cn 'im/dd' DingTalk"
 
 # calibra
 alias calibre="/opt/calibre/calibre"
 
 # axure
-alias axure="wexe32 'rp' axure"
-alias crp="wexe32cn 'rp' axure"
+alias axure="wexe32cn 'rp' axure"
 
 # enterprise architect
-alias ea="wexe32 'ea' ea"
-alias cea="wexe32cn 'ea' ea"
+alias ea="wexe32cn 'ea' ea"
