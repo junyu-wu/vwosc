@@ -36,6 +36,8 @@ xterm*faceSize5: 18
 XTerm*borderWidth: 0
 
 xterm*vt100.allowWindowOps: true
+xterm*vt100.allowTitleOps: true
+xterm*vt100.allowFontOps: true
 
 ! login shell
 xterm*loginshell: true
