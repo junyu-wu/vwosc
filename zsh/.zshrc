@@ -99,6 +99,11 @@ export XMODIFIERS=@im=ibus
 ## gcc
 export CC=/usr/bin/gcc
 
+## tags
+# universal ctags
+export UCTAGS_HOME=$PREFIX/uctags
+export PATH=$PATH:$UCTAGS_HOME/bin
+
 ## ruby
 ## rvm
 export RVM_HOME=$PREFIX/rvm

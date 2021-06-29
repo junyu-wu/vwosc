@@ -1,0 +1,5 @@
+# 忽略缓存或临时文件
+
+vw-notes.txt
+
+trojan/config.json.txt
