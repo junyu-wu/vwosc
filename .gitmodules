@@ -1,0 +1,3 @@
+[submodule "vwe"]
+	path = vwe
+	url = https://github.com/junyu-wu/vwe.git
