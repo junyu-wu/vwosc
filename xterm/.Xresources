@@ -4,8 +4,8 @@
 ! font and input
 xterm.utf8: true
 xterm*utf8Title:true
-xterm*faceName:Consolas!:antialias=True:pixelsize=14
-xterm*faceNameDoublesize:Source Han Sans SC!:antialias=True:pixelsize=14
+xterm*faceName:Hack:antialias=True
+xterm*faceNameDoublesize:Source Han Sans SC:antialias=True
 xterm*locale:zh_CN.UTF-8
 xterm*inputMethod:ibus
 
@@ -104,11 +104,11 @@ xterm*pointerShape:XTerm
 xterm*scaleHeight: 1.01
 
 ! init window size
-xterm.geometry: 80x50
+xterm*geometry:80x25
 
 ! scroll bar
 xterm*rightScrollBar: false
-xterm*ScrollBar: false
+xterm*scrollBar: false
 ! stop output does not jump to bottom
 xterm*scrollTtyOutput: false
 

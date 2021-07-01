@@ -77,7 +77,7 @@ echo -e -n "\x1b[\x36 q" # changes to steady bar
 
 ## xterm
 export XTERM_HOME=$PREFIX/xterm
-export XTERMCONTROL_HOME=$PREFIX/xtermcontrol
+export XTERMCONTROL_HOME=$XTERM_HOME/share/xtermcontrol
 export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
 if [ -f "$HOME/.Xresources" ] ; then
@@ -451,6 +451,15 @@ alias agu="sudo apt update"
 alias agug="sudo apt upgrade"
 alias agud="sudo apt dist-upgrade"
 alias agrm="sudo apt autoremove"
+
+# xterm
+alias xtc="xtermcontrol"
+
+# tmux alias
+alias tmls="tmux ls"
+alias tmad="tmux a -d"
+alias tmat="tmux a -t"
+alias tmks="tmux kill-session -t"
 
 # git alias
 alias gint="git init"
