@@ -281,6 +281,7 @@ export BOCHS_HOME=$PREFIX/bochs
 
 if [ -d $BOCHS_HOME ] ; then
 	export PATH="$PATH:$BOCHS_HOME/bin"
+	export BXSHARE=$BOCHS_HOME/share
 fi
 
 ## guix
