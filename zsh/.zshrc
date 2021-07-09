@@ -104,6 +104,104 @@ export CC=/usr/bin/gcc
 export UCTAGS_HOME=$PREFIX/uctags
 export PATH=$PATH:$UCTAGS_HOME/bin
 
+## wmctrl
+export WMCTRL_HOME=$PREFIX/wmctrl
+export PATH=$PATH:$WMCTRL_HOME/bin
+
+function wm_windows_list() {
+
+	local wms=$(print -r ${(q)"$(wmctrl -x -l)"})
+	local rows=(${(s:\n:)wms})
+
+	for i ({1..$#rows}) {
+
+			local columns=(${=${rows[i]//\\/' '}})
+		if [[ "$1" == "" ]] {
+
+			printf "%s: %s\n" $i $columns[3]
+		} else {
+			   if [[ $1 == "$i" ]] {
+					  local selects=$columns[3]
+					  local select=(${(s:.:)selects})
+					  print $select[1]
+				  }
+		}
+	}
+
+}
+
+function wm_switch_window () {
+
+	print "activate windows:"
+	wm_windows_list
+	vared -p 'select: ' -c select
+	# print $sel
+	local selected=$(wm_windows_list $select)
+
+	$(wmctrl -x -a $selected)
+}
+
+# bash script
+# wm_windows_list()
+# {
+# 	if hash wmctrl 2>/dev/null; then
+# 		WMXLS=$( wmctrl -x -l)
+# 		IFS=$'\n'
+# 		ROW_INDEX=0
+
+# 		for WMXL in $WMXLS; do
+# 			IFS=" "
+# 			ROW=${WMXL}
+# 			COLUMN_INDEX=0
+
+# 			if [ ! -n "$1" ]
+# 			then
+# 				for COLUMN in $ROW; do
+# 					if [ $COLUMN_INDEX == 2 ]
+# 					then
+# 						echo "$ROW_INDEX: $COLUMN"
+# 					fi
+# 					let "COLUMN_INDEX += 1"
+# 				done
+
+# 			else
+# 				if [ $ROW_INDEX == $1 ]
+# 				then
+# 					for COLUMN in $ROW; do
+# 					if [ $COLUMN_INDEX == 2 ]
+# 					then
+# 						echo "$COLUMN"
+# 					fi
+# 					let "COLUMN_INDEX += 1"
+# 					done
+# 				fi
+# 			fi
+# 			let "ROW_INDEX += 1"
+# 		done
+# 	else
+# 		echo "wmctrl not found. please install ..."
+# 	fi
+# }
+
+# wm_switch_window()
+# {
+# echo "please select:"
+# wm_windows_list
+# read -p "select?" select
+# SELECTED=`wm_windows_list $select`
+# IFS=$'.'
+# TOGGLE=${SELECTED}
+
+# for NAME in $TOGGLE; do
+# 	echo "swtich to: $NAME"
+# 	# PNAME=$( ps -ax -o comm | grep -i $NAME | grep -v grep )
+# 	# if [ "$PNAME" != "" ] ; then
+# 	wmctrl -x -a $NAME
+# 	# fi
+# 	break
+# done
+# }
+
 ## ruby
 ## rvm
 export RVM_HOME=$PREFIX/rvm
@@ -461,6 +559,9 @@ alias tmls="tmux ls"
 alias tmad="tmux a -d"
 alias tmat="tmux a -t"
 alias tmks="tmux kill-session -t"
+
+# wmctrl
+alias wms="wm_switch_window"
 
 # git alias
 alias gint="git init"
