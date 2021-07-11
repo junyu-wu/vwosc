@@ -1,0 +1,385 @@
+# vwzsh
+
+#*******************************************************************************
+#
+# theme
+# zsh theme
+#
+#*******************************************************************************
+autoload -U colors && colors
+setopt promptsubst
+
+vwz_setup_git_prompt () {
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        unset git_prompt
+        return 0
+    fi
+
+    local git_status_dirty git_status_stash git_branch
+
+    if [ "$(git --no-optional-locks status --untracked-files='no' --porcelain)" ]; then
+        git_status_dirty='%F{green}*'
+    else
+        unset git_status_dirty
+    fi
+
+    if [ "$(git stash list)" ]; then
+        git_status_stash="%F{yellow}▲"
+    else
+        unset git_status_stash
+    fi
+
+    git_branch="$(git symbolic-ref HEAD 2>/dev/null)"
+    git_branch="${git_branch#refs/heads/}"
+
+    if [ "${#git_branch}" -ge 24 ]; then
+        git_branch="${git_branch:0:21}..."
+    fi
+
+    git_branch="${git_branch:-no branch}"
+
+    git_prompt="$fg[red]git $fg[blue][$fg[yellow]${git_branch}${git_status_dirty}${git_status_stash}$fg[blue]]"
+
+	print -- $git_prompt
+}
+
+function vwz_prompt_theme () {
+	local git_info=$(vwz_setup_git_prompt)
+	print -- "%{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
+%{$fg[cyan]%n%} %{$fg[green]%}.%{$fg[green]%~%} %{$fg[white]%}[%{%*%}] \
+${git_info}
+%{$terminfo[bold]$fg[red]%}$ %{$reset_color%}"
+}
+
+#*******************************************************************************
+#
+# complete
+# zsh auto complete
+#
+#*******************************************************************************
+autoload -U compinit && compinit
+
+setopt AUTO_LIST
+setopt AUTO_MENU
+
+zstyle ':completion:*' rehash true
+#开启此选项，补全时会直接选中菜单项
+setopt MENU_COMPLETE
+
+zstyle ':completion:*:*:*:*:*' menu select
+#自动补全缓存
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path .zcache
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+#自动补全选项
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:default' force-list always
+zstyle ':completion:*' select-prompt '%SSelect:  lines: %L  matches: %M  [%p]'
+
+zstyle ':completion:*:match:*' original only
+zstyle ':completion::prefix-1:*' completer _complete
+zstyle ':completion:predict:*' completer _complete
+zstyle ':completion:incremental:*' completer _complete _correct
+zstyle ':completion:*' completer _complete _prefix _correct _prefix _match _approximate
+
+#路径补全
+zstyle ':completion:*' expand 'yes'
+zstyle ':completion:*' squeeze-shlashes 'yes'
+zstyle ':completion::complete:*' '\\'
+
+#彩色补全菜单
+# eval $(dircolors -b)
+LS_COLORS='no=00;37:fi=00:di=00;33:ln=04;36:pi=40;33:so=01;35:bd=40;33;01:'
+export CLICOLOR=1
+export LS_COLORS
+zmodload zsh/complist
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+
+#修正大小写
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+#错误校正
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+#kill 命令补全
+compdef pkill=kill
+compdef pkill=killall
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:*:*:processes' force-list always
+zstyle ':completion:*:processes' command 'ps -au$USER'
+
+#补全类型提示分组
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:descriptions' format $'\e[01;33m -- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[01;35m -- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[01;31m -- No Matches Found --\e[0m'
+zstyle ':completion:*:corrections' format $'\e[01;32m -- %d (errors: %e) --\e[0m'
+
+# cd ~ 补全顺序
+zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+#}}}
+#*******************************************************************************
+#
+# directory
+# zsh extend directory
+#
+#*******************************************************************************
+setopt autocd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushdminus
+setopt pushdsilent
+setopt pushdtohome
+setopt interactivecomments
+setopt magicequalsubst
+setopt numericglobsort
+
+vwz_cd_undo () {
+  popd      > /dev/null
+  zle       reset-prompt
+  echo
+  ls
+  echo
+}
+
+vwz_cd_to_parent() {
+  pushd .. > /dev/null
+  zle      reset-prompt
+  echo
+  ls
+  echo
+}
+
+vwz_cd_switch_history () {
+	print -- "$(dirs -v)"
+	echo
+	local to_dir=""
+	vared -p "to? " -c to_dir
+	local num=$(printf "%d" to_dir)
+    local to_cd=$(printf "-%d" $(printf "%d" $(($num + 0))))
+	cd $(print $to_cd)
+	echo
+}
+
+zle -N vwz_cd_undo
+zle -N vwz_cd_to_parent
+zle -N vwz_cd_switch_history
+
+DIRSTACKFILE="$HOME/.cache/zdirs"
+DIRSTACKSIZE=20
+
+if [[ ! -f $DIRSTACKFILE ]]; then
+	touch $DIRSTACKFILE
+fi
+
+if [[ -f $DIRSTACKFILE ]] && [[ $#dirstack -eq 0 ]]; then
+	dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
+	[[ -d $dirstack[1] ]] && cd $dirstack[1]
+fi
+
+chpwd() {
+  print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
+}
+
+#*******************************************************************************
+#
+# command
+# zsh prettify command
+#
+#*******************************************************************************
+setopt nonomatch
+setopt notify
+
+#漂亮又实用的命令高亮界面
+setopt extended_glob
+TOKENS_FOLLOWED_BY_COMMANDS=('|' '||' ';' '&' '&&' 'sudo' 'do' 'time' 'strace')
+
+vwz_recolor-cmd() {
+     region_highlight=()
+     colorize=true
+     start_pos=0
+     for arg in ${(z)BUFFER}; do
+         ((start_pos+=${#BUFFER[$start_pos+1,-1]}-${#${BUFFER[$start_pos+1,-1]## #}}))
+         ((end_pos=$start_pos+${#arg}))
+         if $colorize; then
+             colorize=false
+             res=$(LC_ALL=C builtin type $arg 2>/dev/null)
+             case $res in
+                 *'reserved word'*)   style="fg=magenta,bold";;
+                 *'alias for'*)       style="fg=cyan,bold";;
+                 *'shell builtin'*)   style="fg=yellow,bold";;
+                 *'shell function'*)  style='fg=green,bold';;
+                 *"$arg is"*)
+                     [[ $arg = 'sudo' ]] && style="fg=red,bold" || style="fg=blue,bold";;
+                 *)                   style='none,bold';;
+             esac
+             region_highlight+=("$start_pos $end_pos $style")
+         fi
+         [[ ${${TOKENS_FOLLOWED_BY_COMMANDS[(r)${arg//|/\|}]}:+yes} = 'yes' ]] && colorize=true
+         start_pos=$end_pos
+     done
+}
+
+check-cmd-self-insert() { zle .self-insert && vwz_recolor-cmd }
+check-cmd-backward-delete-char() { zle .backward-delete-char && vwz_recolor-cmd }
+
+zle -N self-insert check-cmd-self-insert
+zle -N backward-delete-char check-cmd-backward-delete-char
+
+#*******************************************************************************
+#
+# history
+# zsh history setup
+#
+#*******************************************************************************
+setopt HIST_IGNORE_ALL_DUPS
+setopt INC_APPEND_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+
+HISTFILE="$HOME/.cache/zhist"
+HISTSIZE=10000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth ## ignoredups ignorespace erasedups
+HISTIGNORE="ls:history"
+SAVEHIST=100000
+
+if [[ ! -f $$DIRSTACKFILE ]]; then
+	touch $DIRSTACKFILE
+fi
+
+# autoload -Uz history-beginning-search-menu
+# zle -N history-beginning-search-menu
+# bindkey '^X^X' history-beginning-search-menu
+
+autoload -U history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+
+function vwz_history-incremental-search-backward () {
+    zle .history-incremental-search-backward $BUFFER
+}
+zle -N history-incremental-search-backward vwz_history-incremental-search-backward
+bindkey '^R' history-incremental-search-backward
+
+#*******************************************************************************
+#
+# plugins
+# zsh thrid plugins
+#
+#*******************************************************************************
+function vwz_load_plugins () {
+	for plugin ($PLUGINS); do
+		if [ -f $VWZ/plugins/$plugin/$plugin.plugin.zsh ]; then
+			source $VWZ/plugins/$plugin/$plugin.plugin.zsh
+		fi
+		# if [ -f $VWZ/plugins/$plugin/$plugin.zsh ]; then
+		# 	source $VWZ/plugins/$plugin/$plugin.zsh
+		# fi
+	done
+}
+
+#*******************************************************************************
+#
+# alias
+# zsh defautl alias
+#
+#*******************************************************************************
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias diff='diff --color=auto'
+    alias ip='ip --color=auto'
+
+    export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
+    export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
+    export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+    export LESS_TERMCAP_so=$'\E[01;33m'    # begin reverse video
+    export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+    export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+    export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+    # Take advantage of $LS_COLORS for completion as well
+    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+fi
+
+alias d="vwz_cd_switch_history"
+alias u="vwz_cd_undo"
+alias p="vwz_cd_parent"
+alias l="ls -lah"
+
+#*******************************************************************************
+#
+# misc
+# zsh misc configure
+#
+#*******************************************************************************
+echo -e -n "\x1b[\x36 q" # changes to steady bar
+#以下字符视为单词的一部分
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
+
+## language
+export LANG=en_US.UTF-8
+
+## time
+export LC_TIME=en_US.UTF-8
+
+## prefix
+export PREFIX=/usr/local
+
+## man
+export MANPATH=$PREFIX/man:$MANPATH
+
+HIST_WHO="`whoami`"
+HIST_HOST="`who -u am i 2>/dev/null | awk '{print $NF}' | sed -e 's/[()]//g'`"
+
+if [ "$HIST_HOST" = "" ]; then
+	HIST_HOST=`hostname`
+fi
+
+HIST_USER="$HIST_WHO@$HIST_HOST"
+
+export HISTTIMEFORMAT="%F %T $HIST_USER"
+
+
+#*******************************************************************************
+#
+# bindkye
+# zsh bindkey
+#
+#*******************************************************************************
+bindkey -e
+bindkey ' ' magic-space
+
+#*******************************************************************************
+#
+# default load
+# zsh default load
+#
+#*******************************************************************************
+PROMPT=$(vwz_prompt_theme)
+PLUGINS=(zsh-autocomplete
+		 zsh-syntax-highlighting)
+
+vwz_load_plugins
+
+bindkey '^U' menu-select
+
+if [ -f $VWZ/custom ]; then
+	source $VWZ/custom
+fi

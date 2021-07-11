@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+if (( BUFFERLINES > 1 )); then
+  local -i cursor=$CURSOR
+  zle .down-line
+  (( cursor == CURSOR )) &&
+      zle .end-of-line
+  (( cursor != CURSOR ))
+else
+  zle menu-select -w
+fi

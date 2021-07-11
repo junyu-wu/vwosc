@@ -1,0 +1,42 @@
+#autoload
+unset MENUSELECT
+unset curcontext
+compstate[insert]=
+compstate[list]=
+
+local key_name=${(kL)key[(Re)$KEYS]}
+local key_style; zstyle -s :autocomplete:${key_name}: widget-style key_style
+
+if  ( [[ $KEYS == $key[Shift-Tab] ]] ||
+      zstyle -t ":autocomplete:${key_name}:" insert-unambiguous
+    ) && [[ $IPREFIX$PREFIX$SUFFIX$ISUFFIX != *${compstate[unambiguous]:#?}* ]]; then
+  # Work around a crashing bug in Zsh.
+  # See [zsh-workers 48936](https://www.zsh.org/mla/workers/2021/msg01162.html).
+  [[ $key_style == *menu-* && $KEYS == ($key[Tab]|$key[Shift-Tab]) ]] &&
+      compstate[insert]='automenu-'
+
+  compstate[insert]+=unambiguous
+  return
+fi
+
+if [[ $WIDGET == *menu-select ]]; then
+  # Determine which terminal line we're on (for async completion).
+  (( _autocomplete__buffer_start_line = max( BUFFERLINES, LINES - compstate[list_lines] ) ))
+  MENUSELECT=0
+fi
+
+# Work around a crashing bug in Zsh.
+# See [zsh-workers 48936](https://www.zsh.org/mla/workers/2021/msg01162.html).
+[[ $key_style == *menu-* && $KEYS == ($key[Tab]|$key[Shift-Tab]) ]] &&
+    compstate[insert]='menu:'
+
+if [[ $KEYS == $key[Shift-Tab] ]]; then
+  compstate[insert]+='0'
+else
+  compstate[insert]+='1'
+fi
+
+local -a tags; zstyle -a :autocomplete: add-space tags ||
+    tags=( executables aliases functions builtins reserved-words commands )
+[[ $RBUFFER != [[:space:]]* && -n ${${=${_comp_tags:-$_lastcomp[tags]}}:*tags} ]] &&
+    compstate[insert]+=' '
