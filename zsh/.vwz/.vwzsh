@@ -374,7 +374,8 @@ bindkey ' ' magic-space
 #*******************************************************************************
 PROMPT=$(vwz_prompt_theme)
 PLUGINS=(zsh-autocomplete
-		 zsh-syntax-highlighting)
+		 zsh-syntax-highlighting
+		 zsh-autosuggestions)
 
 vwz_load_plugins
 
