@@ -2,5 +2,16 @@
 
 vw-notes.txt
 
-vwe/*
+fonts/*
+
+trojan/config.json.now
 trojan/config.json.txt
+trojan/gui-config.json
+
+vwe/*
+
+ssh/*
+
+image/*
+
+guix/*

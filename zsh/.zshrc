@@ -172,6 +172,10 @@ function wm_switch_window () {
 # done
 # }
 
+## nasm
+export NASM_HOME=$PREFIX/nasm
+export PATH=$PATH:$NASM_HOME/bin
+
 ## ruby
 ## rvm
 export RVM_HOME=$PREFIX/rvm
@@ -181,7 +185,7 @@ export PATH=$PATH:$RVM_HOME/bin
 
 ## golang
 export GOROOT=$PREFIX/go
-export GOPATH=/home/workspace/go
+export GOPATH=$HOME/workspace/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin:$GOBIN
 export GO111MODULE=on
@@ -195,11 +199,11 @@ export CONDA_HOME=$PREFIX/anaconda
 export PATH=$PATH:$CONDA_HOME/bin
 
 ## java
-# export JAVA_HOME=$PREFIX/java/jdk-16
+# export JAVA_HOME=$PREFIX/java/jdk8
 # export PATH=$PATH:$JAVA_HOME/bin
 # _SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
-unset _JAVA_OPTIONS
-alias java='java "$_SILENT_JAVA_OPTIONS"'
+# unset _JAVA_OPTIONS
+# alias java='java "$_SILENT_JAVA_OPTIONS"'
 
 ## rust
 # export RUST_HOME=$PREFIX/rust
@@ -221,7 +225,7 @@ export MAVEN_HOME=$PREFIX/maven/3.6.3
 export PATH=$PATH:$MAVEN_HOME/bin
 
 ## nodejs
-export NODE_HOME=$PREFIX/nodejs
+export NODE_HOME=$PREFIX/node
 export PATH=$PATH:$NODE_HOME/bin
 
 ## dotnet
@@ -493,9 +497,15 @@ alias sreboot="sudo reboot"
 alias poff="sudo shutdown -h now"
 
 # proxy alias
-alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json"
+alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json &"
 alias p4="proxychains4"
 alias privoxy="sudo service privoxy start"
+
+# display
+alias xrdl="xrandr --output eDP-1 --left-of DP-2 --auto"
+alias xrdr="xrandr --output eDP-1 --right-of DP-2 --auto"
+alias xrds="xrandr --output DP-2 --auto"
+alias xrdk="xrandr --output DP-2 --off"
 
 # emacs alias
 alias ed="emacs --daemon"
@@ -520,6 +530,9 @@ alias agu="sudo apt update"
 alias agug="sudo apt upgrade"
 alias agud="sudo apt dist-upgrade"
 alias agrm="sudo apt autoremove"
+
+alias cdw="cd /home/vwx/workspace/"
+alias cdd="cd /home/vwx/Downloads/"
 
 # xterm
 alias xtc="xtermcontrol"
@@ -557,6 +570,7 @@ alias wexe32="wine32Exec"
 alias wexe32cn="wine32ExecForZH_CN"
 
 alias wechat="wexe32 'im/wx' wechat"
+alias wechatcn="wexe32cn 'im/wx' wechat"
 alias dding="wexe32cn 'im/dd' DingTalk"
 
 # calibra
