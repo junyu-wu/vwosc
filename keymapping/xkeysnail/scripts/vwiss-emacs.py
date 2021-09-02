@@ -52,9 +52,9 @@ define_keymap(
         K("C-TAB"),
         K("C-M-k"):
         K("C-Shift-TAB"),
-        K("M-r"):
+        K("M-f"):
         K("C-TAB"),
-        K("M-q"):
+        K("M-a"):
         K("C-Shift-TAB"),
         # Type C-j to focus to the content
         K("C-j"):
@@ -63,7 +63,14 @@ define_keymap(
         K("C-w"),
         K("C-M-r"):
         K("f5"),
+        K("C-m"):
+        K("C-Shift-b"),
         # very naive "Edit in editor" feature (just an example)
+        K("C-c"):
+        [K("C-c"),
+         launch(["emacs"]),
+         sleep(0.5),
+         K("C-v")],
         K("C-o"):
         [K("C-a"), K("C-c"),
          launch(["emacs"]),
