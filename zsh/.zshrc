@@ -27,7 +27,8 @@ export PATH=$PATH:$EMACS_HOME/bin
 
 
 if hash emacs 2>/dev/null; then
-	export EDITOR=emacs
+	export VISUAL=$EMACS_HOME/bin/emacs
+	export EDITOR=VISUAL=$EMACS_HOME/bin/emacs
 fi
 
 if [[ -n $SSH_CONNECTION ]]; then
@@ -52,6 +53,7 @@ export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
 if [ -f "$HOME/.Xresources" ] ; then
 	xrdb -merge $HOME/.Xresources
+	transset -t -a >> /dev/null 2>&1
 fi
 
 ## tmux
@@ -226,6 +228,7 @@ export PATH=$PATH:$MAVEN_HOME/bin
 
 ## nodejs
 export NODE_HOME=$PREFIX/node
+export NPM_PATH=$NODE_HOME/npm
 export PATH=$PATH:$NODE_HOME/bin
 
 ## dotnet
@@ -496,6 +499,9 @@ alias logout="xfce4-session-logout -l"
 alias sreboot="sudo reboot"
 alias poff="sudo shutdown -h now"
 
+# device
+alias fingeroff="xinput disable 17"
+
 # proxy alias
 alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json &"
 alias p4="proxychains4"
@@ -505,7 +511,10 @@ alias privoxy="sudo service privoxy start"
 alias xrdl="xrandr --output eDP-1 --left-of DP-2 --auto"
 alias xrdr="xrandr --output eDP-1 --right-of DP-2 --auto"
 alias xrds="xrandr --output DP-2 --auto"
+alias xrdc="xrandr --output DP-2 --same-as eDP-1"
 alias xrdk="xrandr --output DP-2 --off"
+alias xrdmp="xrandr --output eDP1 --mode "
+alias xrdme="xrandr --output DP-2 --mode "
 
 # emacs alias
 alias ed="emacs --daemon"
@@ -535,6 +544,8 @@ alias cdw="cd /home/vwx/workspace/"
 alias cdd="cd /home/vwx/Downloads/"
 
 # xterm
+alias tst="transset -t -a"
+alias tsx="transset -a -x"
 alias xtc="xtermcontrol"
 
 # tmux alias
@@ -569,7 +580,7 @@ alias wine32="winesetup"
 alias wexe32="wine32Exec"
 alias wexe32cn="wine32ExecForZH_CN"
 
-alias wechat="wexe32 'im/wx' wechat"
+alias wechat="wexe32 'im/wx' wechat >> /dev/null 2>&1"
 alias wechatcn="wexe32cn 'im/wx' wechat"
 alias dding="wexe32cn 'im/dd' DingTalk"
 
