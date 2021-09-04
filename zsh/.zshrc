@@ -3,11 +3,13 @@
 #*******************************************************************************
 #
 # zsh configure
-# load vwzsh for zsh
+# load and init vwzsh for zsh
 #
 #*******************************************************************************
 export VWZ="$HOME/.vwz"
 export ZSH=$VWZ
+
+IS_TRANSPARENT=1
 
 source $VWZ/.vwzsh
 
@@ -54,7 +56,6 @@ export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
 if [ -f "$HOME/.Xresources" ] ; then
 	xrdb -merge $HOME/.Xresources
-	transset -t -a >> /dev/null 2>&1
 fi
 
 ## tmux
@@ -414,8 +415,6 @@ fi
 
 ## alias
 # sys alias
-alias vwr="su - root"
-alias shome="source ~/.zshrc"
 alias logout="xfce4-session-logout -l"
 alias sreboot="sudo reboot"
 alias poff="sudo shutdown -h now"
@@ -465,8 +464,6 @@ alias cdw="cd /home/vwx/workspace/"
 alias cdd="cd /home/vwx/Downloads/"
 
 # xterm
-alias tst="transset -t -a"
-alias tsx="transset -a -x"
 alias xtc="xtermcontrol"
 
 # tmux alias
