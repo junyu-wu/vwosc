@@ -365,7 +365,7 @@ zle -N history-incremental-search-backward vwz_history-incremental-search-backwa
 bindkey '^R' history-incremental-search-backward
 
 # 将历史记录汇总到一起
-function allhistory { cat $(find $HOME/.zshhistory -name zhistory)}
+function allhistory { cat $(find $VWZCACHE/.zshhistory -name zhistory)}
 
 # 历史记录格式化
 function convhistory {
