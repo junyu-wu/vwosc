@@ -164,15 +164,15 @@ zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directori
 #
 #*******************************************************************************
 ## 在命令前增加 sudo
-vwe_sudo_command_line () {
+sudo_command_line () {
 	[[ -z $BUFFER ]] && zle up-history
 	[[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
 	zle end-of-line # 光标移动到行尾
 }
 
-zle -N vwe_sudo_command_line
+zle -N sudo_command_line
 
-bindkey "\e\e" vwe_sudo_command_line
+bindkey "\e\e" sudo_command_line
 
 #*******************************************************************************
 #
@@ -195,19 +195,19 @@ setopt longlistjobs # 使用jobs时显示PID
 setopt nobeep # 不发出声音
 
 # 返回上个文件夹
-vwz_cd_undo () {
+cd_undo () {
   popd      > /dev/null
   zle reset-prompt
 }
 
 # 跳转到父文件夹
-vwz_cd_parent() {
+cd_parent() {
   pushd .. > /dev/null
   zle      reset-prompt
 }
 
 # cd 命令历史记录切换
-vwz_cd_switch_history () {
+cd_switch_history () {
 	print -- "$(dirs -v)"
 	echo
 	local to_dir=""
@@ -219,7 +219,7 @@ vwz_cd_switch_history () {
 }
 
 # 自动添加cd命令
-vwe_user_complete() {
+auto_cd() {
 	if [[ -n $BUFFER ]] ; then
 		zle expand-or-complete
 	else
@@ -229,12 +229,12 @@ vwe_user_complete() {
 	fi
 }
 
-zle -N vwz_cd_undo
-zle -N vwz_cd_to_parent
-zle -N vwz_cd_switch_history
-zle -N vwe_user_complete
+zle -N cd_undo
+zle -N cd_parent
+zle -N cd_switch_history
+zle -N auto_cd
 
-bindkey "\t" vwe_user_complete
+bindkey "\t" auto_cd
 
 # 开启终端进入最后使用路径
 # DIRSTACKFILE="$VWZCACHE/zdirs"
@@ -365,33 +365,36 @@ zle -N history-incremental-search-backward vwz_history-incremental-search-backwa
 bindkey '^R' history-incremental-search-backward
 
 # 将历史记录汇总到一起
-function allhistory { cat $(find $VWZCACHE/.zshhistory -name zhistory)}
+function vwz_allhistory {
+	cat $(find $VWZCACHE/.zshhistory -name zhistory)
+}
 
 # 历史记录格式化
-function convhistory {
+function vwz_convhistory {
 	sort $1 | # 排序
-		uniq | # 合并相同
-		# sed 's/^:( [0-9]*):[0-9]*;(.*)/\1::\2/g' |
-		awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print }'
-		# sed 's/^:\( [0-9]*\):\([0-9]*\);(.*)/\1::::\2/g'  |
-		# awk -F'[;]' '{print strftime("%F %T", $1/1000),$2}'
+	uniq | # 合并相同
+	# sed 's/^:( [0-9]*):[0-9]*;(.*)/\1::\2/g' |
+	awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print }'
 }
 
 # 查看全部历史记录
-function histall { convhistory =(allhistory) |
-						  sed '/^.{20} *cd/i\' }
+function histall {
+	vwz_convhistory =(vwz_allhistory) | sed '/^.{20} *cd/i\'
+}
 
 # 查看当前目录
-function hist { convhistory $HISTFILE }
+function hist {
+	vwz_convhistory $HISTFILE
+}
 
 # 根据单词出现频率查看全部历史记录 top20
-function top! { allhistory | awk -F':[ 0-9]:[0-9];' '{ $1="" ; print }' |
-					sed 's/ /\n/g' |
-					sed '/^$/d' |
-					sort | uniq -c | sort -nr | head -n 20 }
-
-zle -N histall
-bindkey '^T' histall
+function top! {
+	vwz_allhistory |
+	awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print $2}' |
+	sed 's/ /\n/g' |
+	sed '/^$/d' |
+	sort | uniq -c | sort -nr | head -n 20
+}
 
 #*******************************************************************************
 #
@@ -516,6 +519,65 @@ function sctl()
 
 zle -N sctl
 
+function vwz_transparent ()
+{
+	local transpro=$(print -r ${(q)"$(transset -t -a | awk '{print $4}')"})
+
+	if [[ $transpro == 1 ]] {
+		CURRENT_STATUS=0
+	} else {
+		CURRENT_STATUS=1
+	}
+
+	if [[ $CURRENT_STATUS != 0 && $TRANSPARENT_STATUS != 1 ]] {
+		transset -t -a >> /dev/null 2>&1
+	} elif [[ $CURRENT_STATUS != 1 && $TRANSPARENT_STATUS != 0 ]] {
+		transset -t -a >> /dev/null 2>&1
+	}
+
+	# echo $CURRENT_STATUS
+	# echo $TRANSPARENT_STATUS
+
+	if [[ $CURRENT_STATUS == 0 && $TRANSPARENT_STATUS == 1 ]] {
+		TRANSPARENT_STATUS=0
+	} elif [[ $CURRENT_STATUS == 1 && $TRANSPARENT_STATUS == 0 ]] {
+		TRANSPARENT_STATUS=1
+	}
+}
+
+function transparent_toggle ()
+{
+	if [[ "$1" == "" ]] {
+		if [[ $TRANSPARENT_STATUS == 0 ]] {
+			transset -t -a >> /dev/null 2>&1
+			TRANSPARENT_STATUS=1
+		} elif [[ $TRANSPARENT_STATUS == 1 ]] {
+			transset -t -a >> /dev/null 2>&1
+			TRANSPARENT_STATUS=0
+		}
+	} else {
+		if [[ $TRANSPARENT_STATUS == 1 ]] {
+			transset -t -a >> /dev/null 2>&1
+			TRANSPARENT_STATUS=0
+		}
+
+		 transset -t -a "$1" >> /dev/null 2>&1
+		 TRANSPARENT_STATUS=1
+		 echo "set background transparency to $1"
+	}
+}
+
+zle -N transparent_toggle
+bindkey '^h' transparent_toggle
+
+if [[ $IS_TRANSPARENT == "" ]] {
+	   TRANSPARENT_STATUS=0 # 1 透明 0 不透明
+} else {
+	   TRANSPARENT_STATUS=$IS_TRANSPARENT
+}
+
+vwz_transparent
+
 #*******************************************************************************
 #
 # bindkye
@@ -534,8 +596,8 @@ bindkey ' ' magic-space
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -556,7 +618,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias ...='cd ..'
-alias d="vwz_cd_switch_history"
+alias d="cd_switch_history"
 alias u="cd -"
 alias p="cd .."
 alias l="ls -lah"
@@ -564,6 +626,8 @@ alias s="du --max-depth=1 -h"
 alias f="df -h"
 alias r="source $HOME/.zshrc"
 alias pl="vwz_load_plugins"
+alias tsr="transparent_toggle"
+alias tx="transset -t -x"
 
 hash -d l="/usr/local"
 hash -d o="/opt"
@@ -582,9 +646,9 @@ hash -d e="$HOME/.emacs.d"
 #
 #*******************************************************************************
 PROMPT=$(vwz_prompt_theme)
-PLUGINS=(zsh-syntax-highlighting
-		 zsh-autocomplete
-		 zsh-autosuggestions # https://github.com/zsh-users/zsh-syntax-highlighting.git
+PLUGINS=(zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highlighting.git
+		 zsh-autocomplete # https://github.com/marlonrichert/zsh-autocomplete.git
+		 zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions.git
 		 vwz-ranger)
 
 vwz_load_plugins
