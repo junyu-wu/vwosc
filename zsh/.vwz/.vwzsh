@@ -6,6 +6,11 @@
 # local option
 #
 #*******************************************************************************
+export VWZ="$HOME/.vwz"
+export ZSH=$VWZ
+
+export PATH=$PATH:$VWZ:$ZSH
+
 ## cache base direcotry
 VWZCACHE="$HOME/.cache/vwz"
 mkdir -p $VWZCACHE
@@ -79,14 +84,18 @@ zle_highlight=(region:bg=magenta
 #*******************************************************************************
 autoload -U compinit && compinit
 
-# setopt AUTO_LIST
-setopt AUTO_MENU
-setopt AUTO_CD
-setopt complete_in_word
+setopt AUTO_LIST # 在不明确的完成时自动列出选项
+setopt AUTO_MENU # 在第二次连续请求完成后自动使用菜单完成
+setopt AUTO_REMOVE_SLASH # 如果补全产生的最后一个字符是斜杠，而键入的下一个字符是单词定界符、斜杠或结束命令的字符（如分号或与号），则删除斜杠
+setopt ALWAYS_TO_END # 标在单词内执行补全，并插入完整补全，则光标将移动到单词的末尾
+setopt BASH_AUTO_LIST
+setopt COMPLETE_IN_WORD # 如果未设置，则如果开始完成，光标将设置到单词的末尾。否则它会留在那里并且从两端完成
+setopt COMPLETE_ALIASES # 防止命令行上的别名在尝试完成之前被内部替换。其效果是使别名成为完成目的的独特命令
+setopt GLOB_COMPLETE #
+setopt MENU_COMPLETE # 不列出可能性，直接插入第一项
 
 zstyle ':completion:*' rehash true
 #开启此选项，补全时会直接选中菜单项
-setopt MENU_COMPLETE
 
 zstyle ':completion:*:*:*:*:*' menu select
 #自动补全缓存
@@ -147,7 +156,6 @@ zstyle ':completion:*:corrections' format $'\e[01;32m -- %d (errors: %e) --\e[0m
 
 # cd ~ 补全顺序
 zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-#}}}
 
 #*******************************************************************************
 #
@@ -172,32 +180,30 @@ bindkey "\e\e" vwe_sudo_command_line
 # zsh extend directory
 #
 #*******************************************************************************
-setopt autocd
-setopt auto_pushd
-setopt pushd_ignore_dups
-setopt pushdminus
-setopt pushdsilent
-setopt pushdtohome
-setopt interactivecomments
+setopt autocd # 不需要使用`cd`
+setopt auto_pushd # 在堆中维护目录
+setopt pushd_ignore_dups # 目录中删除重复项
+setopt pushdminus # 反转 + 和 - 的含义
+setopt pushdsilent # 在 pushd 或 popd 之后不要打印目录堆栈
+setopt pushdtohome # 没有参数的 pushd 就像‘pushd $HOME’一样
+setopt interactivecomments # 允许在命令中添加注释
+
 setopt magicequalsubst
 setopt numericglobsort
+setopt extendedglob # 启用扩展通配
+setopt longlistjobs # 使用jobs时显示PID
+setopt nobeep # 不发出声音
 
 # 返回上个文件夹
 vwz_cd_undo () {
   popd      > /dev/null
-  zle       reset-prompt
-  # echo
-  # ls
-  # echo
+  zle reset-prompt
 }
 
 # 跳转到父文件夹
 vwz_cd_parent() {
   pushd .. > /dev/null
   zle      reset-prompt
-  echo
-  ls
-  echo
 }
 
 # cd 命令历史记录切换
@@ -407,42 +413,6 @@ function vwz_load_plugins () {
 
 #*******************************************************************************
 #
-# alias
-# zsh defautl alias
-#
-#*******************************************************************************
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-    alias diff='diff --color=auto'
-    alias ip='ip --color=auto'
-
-    export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
-    export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
-    export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
-    export LESS_TERMCAP_so=$'\E[01;33m'    # begin reverse video
-    export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
-    export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
-    export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
-
-    # Take advantage of $LS_COLORS for completion as well
-    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-fi
-
-alias ..='cd ..'
-alias d="vwz_cd_switch_history"
-alias u="vwz_cd_undo"
-alias p="vwz_cd_parent"
-alias l="ls -lah"
-
-#*******************************************************************************
-#
 # misc
 # zsh misc configure
 #
@@ -460,6 +430,8 @@ export MANPATH=$PREFIX/man:$MANPATH
 # zsh function
 #
 #*******************************************************************************
+setopt CONTINUE_ON_ERROR
+
 ## proxy
 # slhp
 # set local http & https proxy
@@ -555,14 +527,64 @@ bindkey ' ' magic-space
 
 #*******************************************************************************
 #
+# alias
+# zsh defautl alias
+#
+#*******************************************************************************
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias diff='diff --color=auto'
+    alias ip='ip --color=auto'
+
+    export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
+    export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
+    export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+    export LESS_TERMCAP_so=$'\E[01;33m'    # begin reverse video
+    export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+    export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+    export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+    # Take advantage of $LS_COLORS for completion as well
+    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+fi
+
+alias ...='cd ..'
+alias d="vwz_cd_switch_history"
+alias u="cd -"
+alias p="cd .."
+alias l="ls -lah"
+alias s="du --max-depth=1 -h"
+alias f="df -h"
+alias r="source $HOME/.zshrc"
+alias pl="vwz_load_plugins"
+
+hash -d l="/usr/local"
+hash -d o="/opt"
+hash -d t="/etc"
+hash -d d="/dev"
+hash -d v="/var"
+hash -d m="/media"
+hash -d n="/mnt"
+hash -d d="$HOME/Download"
+hash -d e="$HOME/.emacs.d"
+
+#*******************************************************************************
+#
 # default load
 # zsh default load
 #
 #*******************************************************************************
 PROMPT=$(vwz_prompt_theme)
-PLUGINS=(zsh-autocomplete
-		 zsh-syntax-highlighting
-		 zsh-autosuggestions
+PLUGINS=(zsh-syntax-highlighting
+		 zsh-autocomplete
+		 zsh-autosuggestions # https://github.com/zsh-users/zsh-syntax-highlighting.git
 		 vwz-ranger)
 
 vwz_load_plugins

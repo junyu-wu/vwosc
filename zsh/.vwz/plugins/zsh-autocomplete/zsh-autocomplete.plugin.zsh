@@ -1,7 +1,8 @@
 #!/bin/zsh
-
+zmodload zsh/param/private
 setopt NO_flowcontrol NO_singlelinezle
-() {
+
+zsh-autocomplete() {
   emulate -L zsh -o NO_aliases
   zmodload -Fa zsh/parameter p:functions
 
@@ -15,26 +16,40 @@ setopt NO_flowcontrol NO_singlelinezle
   )
   setopt $_autocomplete__options
 
-  local basedir=${${(%):-%x}:h}
+  private basedir=${${(%):-%x}:P:h}
   if ! [[ -n $basedir && -d $basedir ]]; then
     print -u2 -- 'zsh-autocomplete: Failed to find base dir. Aborting.'
     return 66
   fi
   hash -d zsh-autocomplete=$basedir
-  typeset -gU FPATH fpath=( ~zsh-autocomplete/completion $fpath[@] )
+  typeset -gU FPATH fpath=( ~zsh-autocomplete/functions/completion $fpath[@] )
 
-  local -a funcs=( ~zsh-autocomplete/{utility,widget}/.autocomplete.*~*.zwc(N-.:a) )
+  private -a funcs=(
+      ~zsh-autocomplete/functions{,/widget}/.autocomplete.*~*.zwc(N-.:a)
+  )
   if ! (( $#funcs )); then
     print -u2 -- 'zsh-autocomplete: Failed to find functions. Aborting.'
     return 66
   fi
+  unfunction $funcs[@]:t 2> /dev/null
   builtin autoload -Uz $funcs[@]
 
-  source ~zsh-autocomplete/module/.autocomplete.__init__
+  autoload -Uz ~zsh-autocomplete/scripts/.autocomplete.__init__
+  {
+    .autocomplete.__init__ "$@"
+  } always {
+    unfunction .autocomplete.__init__
+  }
 
   # Workaround for https://github.com/zdharma/zinit/issues/366
   [[ -v functions[.zinit-shade-on] ]] &&
     .zinit-shade-on "${___mode:-load}"
 
   return 0
+}
+
+{
+  zsh-autocomplete "$@"
+} always {
+  unfunction zsh-autocomplete
 }

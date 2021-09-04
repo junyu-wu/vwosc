@@ -1,0 +1,536 @@
+#!/bin/zsh
+zmodload -Fa zsh/zpty b:zpty
+zmodload -Fa zsh/parameter p:funcstack p:functions p:parameters
+zmodload -Fa zsh/system b:sysopen p:sysparams
+zmodload -Fa zsh/zselect b:zselect
+zmodload -Fa zsh/terminfo b:echoti p:terminfo
+zmodload -Fa zsh/zutil b:zparseopts
+builtin autoload -Uz add-zle-hook-widget
+
+typeset -gHi _autocomplete__buffer_start_line=1
+typeset -g ZSH_AUTOSUGGEST_USE_ASYNC=yes
+
+zle -N history-incremental-search-backward .autocomplete.async.history-incremental-search
+zle -N history-incremental-search-forward .autocomplete.async.history-incremental-search
+
+.autocomplete.async.precmd() {
+  typeset -gHF _autocomplete__async_avg_duration=
+  zstyle -s :autocomplete: min-delay _autocomplete__async_avg_duration
+  (( _autocomplete__async_avg_duration += 0.1 ))
+
+  # Start names with `.` to avoid getting wrapped by syntax highlighting.
+  zle -N .autocomplete.async.pty.zle-widget
+  zle -C .autocomplete.async.pty.completion-widget list-choices \
+      .autocomplete.async.pty.completion-widget
+  zle -N .autocomplete.async.complete.fd-widget
+  zle -C ._list_choices list-choices .autocomplete.async.list-choices.completion-widget
+
+  if [[ -v functions[_zsh_highlight_call_widget] ]]; then
+    _zsh_highlight_call_widget() {
+      .autocomplete.zle-flags $WIDGET
+      builtin zle "$@"
+    }
+  fi
+
+  if [[ -v functions[_zsh_autosuggest_highlight_apply] ]]; then
+    private action=
+    for action in clear modify fetch accept partial_accept execute enable disable toggle; do
+      # Set flags according to widget name.
+      eval "_zsh_autosuggest_widget_$action() {
+        .autocomplete.zle-flags \$WIDGET
+        _zsh_autosuggest_$action \"\$@\"
+      }"
+    done
+    _zsh_autosuggest_widget_suggest() {
+      .autocomplete.zle-flags  # Maintain previously set flags.
+      _zsh_autosuggest_suggest "$@"
+    }
+  fi
+
+  add-zle-hook-widget line-init .autocomplete.async.read-cursor-position
+  add-zle-hook-widget line-init .autocomplete.async.reset-context
+
+  add-zle-hook-widget line-init .autocomplete.async.complete
+  add-zle-hook-widget line-pre-redraw .autocomplete.async.complete
+
+  add-zle-hook-widget line-finish .autocomplete.async.clear
+  add-zle-hook-widget isearch-update .autocomplete.async.isearch-update
+  add-zle-hook-widget isearch-exit .autocomplete.async.isearch-exit
+
+  add-zsh-hook zshexit .autocomplete.async.stop
+}
+
+.autocomplete.async.read-cursor-position() {
+  (( KEYS_QUEUED_COUNT || PENDING )) &&
+      return
+
+  if ! [[ -v terminfo[u6] && -v terminfo[u7] ]]; then
+    local -i max_lines=
+    zstyle -s ":autocomplete:${curcontext}:" list-lines max_lines ||
+        (( max_lines = 16 ))
+    (( _autocomplete__buffer_start_line = min( max( LINES - max_lines, 1 ), LINES ) ))
+    return 0
+  fi
+
+  # Don't run if we're in the subshell started by Midnight Commander.
+  # See https://github.com/marlonrichert/zsh-autocomplete/issues/269
+  [[ -v MC_SID ]] &&
+      return
+
+  emulate -L zsh; setopt $_autocomplete__options
+
+  # Cursor position report (u6) always contains two %d markers.
+  private -a CPR=( "${(s:%d:)$( echoti u6 )}" )
+
+  # If there is a %i before the first %d, then decrement both %d values by 1.
+  private -i i=${${${(M)CPR[1]%'%i'}:+1}:-0}
+  CPR[1]=${CPR[1]%'%i'}
+
+  local REPLY=
+  private Y=
+  echoti u7           # Send cursor position request.
+
+  # Parse the cursor position report.
+  read -rsk $#CPR[1]  # Discard the preamble.
+  while [[ $REPLY != $CPR[2] ]]; do
+    read -rsk
+    Y+=$REPLY
+  done
+  Y="${Y%$CPR[2]}"    # Discard the separator.
+
+  # Flush the rest.
+  while [[ $REPLY != $CPR[3] ]]; do
+    read -rsk
+  done
+
+  (( _autocomplete__buffer_start_line = min( max( Y - i, 1 ), LINES ) ))
+}
+
+.autocomplete.async.history-incremental-search() {
+  if [[ $curcontext == $WIDGET* ]]; then
+    unset curcontext
+  else
+    typeset -gH curcontext=${WIDGET}:::
+  fi
+  [[ -o sharehistory ]] &&
+      fc -RI  # Get new history events from file.
+  .autocomplete.async.start
+}
+
+.autocomplete.async.reset-context() {
+  typeset -gH curcontext=''
+  zstyle -s :autocomplete: default-context curcontext
+  return 0
+}
+
+.autocomplete.async.isearch-update() {
+  typeset -gHi _autocomplete__isearch=1
+}
+
+.autocomplete.async.isearch-exit() {
+  .autocomplete.zle-flags $LASTWIDGET
+  unset _autocomplete__isearch
+}
+
+.autocomplete.async.complete() {
+  .autocomplete.zle-flags $LASTWIDGET
+
+  (( KEYS_QUEUED_COUNT || PENDING )) &&
+      return
+
+  region_highlight=()
+  [[ -v functions[_zsh_highlight] ]] &&
+      _zsh_highlight
+  typeset -gH _autocomplete__highlight=( $region_highlight[@] )
+  [[ -v functions[_zsh_autosuggest_highlight_apply] ]] &&
+      _zsh_autosuggest_highlight_apply
+
+  [[ $LASTWIDGET == .autocomplete.async.complete.fd-widget ]] &&
+      return
+
+  if (( REGION_ACTIVE )) ||
+      [[ -v _autocomplete__isearch && $LASTWIDGET == *(incremental|isearch)* ]]; then
+    zle -Rc
+    return 0
+  fi
+
+  [[ $LASTWIDGET ==
+        (_complete_help|list-expand|(|.)(describe-key-briefly|what-cursor-position|where-is)) ]] &&
+      return
+
+  [[ $_lastcomp[insert] == *unambiguous ]] &&
+      zle .auto-suffix-retain  # Make the cursor stay in the right place.
+
+  .autocomplete.async.start
+  return 0
+}
+
+.autocomplete.async.clear() {
+  zle -Rc
+  unset _autocomplete__isearch
+  .autocomplete.async.stop
+  .autocomplete.async.reset-context
+  return 0
+}
+
+.autocomplete.async.stop() {
+  local fd=$_autocomplete__async_complete_fd
+  unset _autocomplete__async_complete_fd
+  if [[ $fd == <-> ]]; then
+    zle -F $fd 2> /dev/null
+    exec {fd}<&-
+  fi
+}
+
+.autocomplete.async.start() {
+  setopt $_autocomplete__options
+
+  .autocomplete.async.stop
+
+  typeset -gH _autocomplete__async_complete_fd=
+  sysopen -r -o cloexec -u _autocomplete__async_complete_fd <(
+    local +h PS4=$_autocomplete__ps4; builtin setopt localoptions promptsubst
+    () {
+      {
+        typeset -F SECONDS=0.0 min_delay
+        local -i fd=
+        local REPLY= header= text=
+        private -i timeout=
+        zstyle -s :autocomplete: min-delay min_delay ||
+            min_delay=0.0
+        zpty AUTOCOMPLETE .autocomplete.async.pty '$LBUFFER' '$RBUFFER'
+        (( fd = REPLY ))
+        zpty -w AUTOCOMPLETE $'\t'
+        zpty -r AUTOCOMPLETE header $'*\C-B'
+
+        (( timeout = ( min_delay + ( 10 * _autocomplete__async_avg_duration ) - SECONDS ) * 100 ))
+        zselect -rt "$timeout" "$fd" &&
+            zpty -r AUTOCOMPLETE text $'*\C-C'
+
+        (( timeout = ( min_delay - SECONDS ) * 100 ))
+        (( timeout > 0.0 )) &&
+            zselect -t "$timeout"
+      } always {
+        # Always produce output, so we always reach the callback, so we can close the fd and unset
+        # $_autocomplete__async_complete_fd (if necessary).
+        print -rNC1 -- "$SECONDS" "${text%$'\C-C'}"
+        zpty -d AUTOCOMPLETE
+      }
+    } "$@" 2>>| $_autocomplete__log_file
+  )
+  zle -Fw "$_autocomplete__async_complete_fd" .autocomplete.async.complete.fd-widget
+
+  # There's a weird bug in Zsh < 5.8, where ^C stops working unless we force a fork.
+  # See https://github.com/zsh-users/zsh-autosuggestions/issues/364
+  command true
+}
+
+.autocomplete.async.pty() {
+  PS1= RPS1=
+  local +h PS4=$_autocomplete__ps4; builtin setopt localoptions promptsubst
+  () {
+    builtin setopt $_autocomplete__options
+    builtin setopt NO_completeinword; [[ -z $curcontext ]] ||
+        builtin setopt completeinword
+
+    private hooks=( chpwd periodic precmd preexec zshaddhistory zshexit )
+    builtin unset ${^hooks}_functions &> /dev/null
+
+    $hooks[@] () {
+      :
+    }
+
+    private hook=
+    for hook in isearch-exit isearch-update line-pre-redraw line-init line-finish \
+        history-line-set keymap-select; do
+      builtin zle -N zle-$hook .autocomplete.async.pty.no-op
+    done
+
+    typeset -gH lbuffer=$1 rbuffer=$2
+
+    builtin bindkey $'\t' .autocomplete.async.pty.zle-widget
+    local __tmp__=
+    builtin vared __tmp__
+  } "$@" 2>>| $_autocomplete__log_file
+}
+
+.autocomplete.async.pty.no-op() {
+  :
+}
+
+.autocomplete.async.pty.zle-widget() {
+  # Completion widget can sometimes return 1 without calling its function. So, we need to print all
+  # our control characters here, to ensure we don't end up waiting endlessly to read them.
+  {
+    builtin print -n -- '\C-B'
+    LBUFFER=$lbuffer
+    RBUFFER=$rbuffer
+    builtin zle .autocomplete.async.pty.completion-widget -w 2> /dev/null
+  } always {
+    builtin print -n -- '\C-C'
+    builtin kill $sysparams[pid]
+  }
+}
+
+.autocomplete.async.pty.completion-widget() {
+  local +h PS4=$_autocomplete__ps4; builtin setopt localoptions promptsubst
+  () {
+    local curcontext=${curcontext:-${WIDGET}:::}
+    unset 'compstate[vared]'
+    local +h -a comppostfuncs=( .autocomplete.async.pty.message )
+    .autocomplete.async.list-choices.main-complete
+    builtin print -rNC1 -- "$compstate[nmatches]" "${(q+)_message_}"
+  } "$@" 2>>| $_autocomplete__log_file
+}
+
+.autocomplete.async.pty.message() {
+  typeset -gH _message_=$mesg
+}
+
+.autocomplete.async.complete.fd-widget() {
+  local -i fd=$1
+  {
+    zle -F $fd # Unhook ourselves immediately, so we don't get called more than once.
+
+    # Ensure our input will not be stopped.
+    unset _autocomplete__async_complete_fd
+
+    .autocomplete.zle-flags ||
+        return 0
+
+    setopt $_autocomplete__options
+    local seconds nmatches message rest
+    [[ -z $2 ]] &&
+        IFS=$'\0' read -ru $fd seconds nmatches message rest
+  } always {
+    exec {fd}<&-
+  }
+
+  [[ $seconds == <->.<-> ]] ||
+      return 0
+
+  (( _autocomplete__async_avg_duration = .1 * seconds + .9 * _autocomplete__async_avg_duration ))
+
+  setopt NO_completeinword; [[ -z $curcontext ]] || setopt completeinword
+
+  # If a widget can't be called, ZLE always returns true.
+  # Thus, we return false on purpose, so we can check if our widget got called.
+  if ! zle ._list_choices -w "$nmatches" "${(Q)message}" 2> /dev/null; then
+    region_highlight=( "$_autocomplete__highlight[@]" )
+    [[ -v functions[_zsh_autosuggest_highlight_apply] ]] &&
+        _zsh_autosuggest_highlight_apply
+
+    # Refresh if and only if our widget got called. Otherwise, Zsh will crash (eventually).
+    zle -R
+  else
+    .autocomplete.async.stop
+  fi
+  return 0
+}
+
+.autocomplete.async.list-choices.completion-widget() {
+  local +h PS4=$_autocomplete__ps4
+  builtin setopt localoptions promptsubst
+  () {
+    private -i nmatches=$1
+    private message=$2
+
+    local min_input=
+    zstyle -s :autocomplete: min-input min_input ||
+        min_input=0
+
+    local ignored=
+    zstyle -s :autocomplete: ignored-input ignored
+
+    local +h -a comppostfuncs=( .autocomplete.async.list-choices.post "$comppostfuncs[@]" )
+    if [[ -n $curcontext ]]; then
+      _main_complete
+    elif (( ${#words[@]} == 1 && ${#words[CURRENT]} < min_input )) ||
+        [[ -n $words[CURRENT] && $words[CURRENT] == $~ignored ]]; then
+      zle -Rc
+    elif (( nmatches == 0 )); then
+      if [[ -n $message ]]; then
+        local msg=
+        zformat -f msg "$message"
+        compadd -x "$msg"
+      else
+        zle -Rc
+      fi
+    else
+      local curcontext=list-choices:::
+      .autocomplete.async.list-choices.main-complete
+    fi
+  } "$@" 2>>| $_autocomplete__log_file
+
+  return 2  # Don't return 1, to prevent beeping.
+}
+
+.autocomplete.async.list-choices.post() {
+  [[ -v _autocomplete__partial_list ]] &&
+      compadd -J -last- -x '%F{black}%K{14}(MORE)%f%k'
+  compstate[insert]=
+  unset MENUSELECT MENUMODE
+}
+
+.autocomplete.async.list-choices.main-complete() {
+  local -i _async_max_lines=
+  () {
+    local -i min_lines=
+    zstyle -s ":autocomplete:${curcontext}:" list-lines min_lines ||
+        min_lines=16
+
+    private -i lines_below_buffer=
+    (( lines_below_buffer = LINES - ( _autocomplete__buffer_start_line + BUFFERLINES ) ))
+    (( min_lines = min( LINES - ( 1 + BUFFERLINES ), min_lines ) ))
+    (( _async_max_lines = max( min_lines, lines_below_buffer ) ))
+  }
+
+  {
+    [[ $curcontext == list-choices:* ]] &&
+        () {
+          emulate -L zsh; setopt $_autocomplete__options
+          functions[compadd]=$functions[.autocomplete.async.compadd]
+        } "$@"
+    _main_complete
+  } always {
+    () {
+      emulate -L zsh; setopt $_autocomplete__options
+      [[ -v functions[compadd] ]] &&
+          unfunction compadd
+      [[ -v functions[comptags] ]] &&
+          unfunction comptags
+    }
+  }
+}
+
+.autocomplete.async.compadd() {
+  local -a _opts_=()
+  zparseopts -E -A _opts_ - D: E: x: X:
+
+  if [[ -v _opts_[-E] || -v _opts_[-x] ]]; then
+    .autocomplete.compadd "$@"
+    return
+  fi
+
+  local -a _matches_=()
+  private -i lines_available ret number_of_new_matches lines_of_new_matches
+  (( lines_available = max( 0, _async_max_lines - ${+_opts_[-X]} - compstate[list_lines] ) ))
+
+  if [[ -v _opts_[-D] ]]; then
+    .autocomplete.compadd "$@"
+    ret=$?
+
+    [[ $funcstack[2] == _describe ]] ||
+        return ret
+
+    private array_name=$_opts_[-D]
+    _matches_=( ${(PA)array_name} )
+
+    (( ${_matches_[(I)*:*]} > 0 )) ||
+        return ret
+
+    private -aU uniques=( ${_matches_[@]#*:} )
+    (( number_of_new_matches = ${#_matches_} ))
+    (( lines_of_new_matches = ${#uniques[@]} ))
+    (( lines_available -= _autocomplete__reserved_lines ))
+  else
+    _autocomplete__reserved_lines=0
+
+    # Pre-emptively trim the matches that will definitely not fit on screen.
+    # (Note: Can't put comments inside expansions, without setting INTERACTIVE_COMMENTS.)
+    _matches_=( "${(0)$(
+      {
+        _opts_=()
+        zparseopts -D -E -A _opts_ - A: D: O: X:
+        .autocomplete.compadd -O _matches_ "$@"
+
+        private -i surplus=
+        (( surplus = ${#_matches_} - ( ( COLUMNS * _async_max_lines ) / 3 ) ))
+        (( surplus > 0 )) &&
+            shift -p $surplus _matches_
+
+        setopt localoptions listtypes
+        zparseopts -D -E -A _opts_ - a
+        _autocomplete.compadd_opts_len "$@"
+        .autocomplete.compadd "${(@)@[1,?]}" -a - _matches_
+      } always {
+        print -rNC1 -- "$compstate[list_lines]" "$compstate[nmatches]" "$_matches_[@]"
+      }
+    )}" )
+
+    private -i list_lines=${_matches_[1]} nmatches=${_matches_[2]}
+    shift 2 _matches_
+
+    (( number_of_new_matches = nmatches - compstate[nmatches] ))
+    (( lines_of_new_matches = list_lines - compstate[list_lines] ))
+
+    _matches_=( ${_matches_[@]:#} )
+  fi
+
+  if (( lines_of_new_matches <= lines_available )); then
+    if [[ $funcstack[2] == _describe && -v _opts_[-D] ]]; then
+      (( _autocomplete__reserved_lines += $lines_of_new_matches ))
+      return ret
+    fi
+    .autocomplete.compadd "$@"
+    return
+  fi
+
+  if [[ -v _opts_[-D] ]]; then
+    if (( ${#uniques} > lines_available )); then
+      typeset -gH _autocomplete__partial_list
+      shift -p $(( ${#uniques} - max( 0, lines_available - 1 ) )) uniques
+      set -A $array_name ${(M@)${(PA)array_name}:#*:(${(~j:|:)uniques})}
+    fi
+    (( _autocomplete__reserved_lines += ${#uniques} ))
+    (( ${(P@)#array_name} > 0 ))
+    return
+  fi
+
+  local -A groupname=()
+  zparseopts -D -E -A _opts_ - a d: k l U J:=groupname V:=groupname
+  private -a dopt=()
+  if [[ -v _opts_[-d] ]]; then
+    if [[ -v _opts_[-l] ]]; then
+      dopt+=( -ld )
+    else
+      dopt+=( -d )
+    fi
+    dopt+=( "$_opts_[-d]" )
+  fi
+  set -- "${(@kv)groupname}" "$@"
+
+  if (( lines_of_new_matches > 0 )); then
+    private -i matches_per_line=
+    (( matches_per_line = 1.0 * number_of_new_matches / lines_of_new_matches ))
+    if (( matches_per_line < 1 )); then
+      dopt[1]=-ld
+      array_name=$_opts_[-d]
+      if [[ -z $array_name ]]; then
+        array_name=displ
+        local -a displ=( "$_matches_[@]" )
+        dopt[2]=displ
+      fi
+      set -A $array_name ${(r:COLUMNS-1:@)${(P@)array_name}//$'\n'/\n}
+      matches_per_line=1
+    fi
+    if (( ${#_matches_} > matches_per_line * lines_available )); then
+      [[ -z $_autocomplete__partial_list ]] &&
+          typeset -gH _autocomplete__partial_list=$curtag
+
+      # Round this down, before subtracting.
+      private -i fit=
+      (( fit = matches_per_line * max( 0, lines_available - 1 ) ))
+
+      shift -p $(( ${#_matches_} - fit )) _matches_
+      (( ${#_matches_} > 0 )) ||
+        comptags() {
+          [[ $funcstack[3] == _autocomplete.history_lines ]] ||
+              return 1
+          builtin comptags "$@"
+        }
+    fi
+  fi
+  _autocomplete.compadd_opts_len "$@"
+  .autocomplete.compadd "${(@)@[1,?]}" $dopt -a _matches_
+}

@@ -4,7 +4,7 @@
 local RANGER_PID
 
 # Press 'Q' exit ranger goto current directory.
-function vwz_ranger! {
+function ranger! {
 
 	local IFS=$'\t\n'
 	local tempfile="$(mktemp -t tmp.XXXXXX)"
@@ -45,6 +45,6 @@ vwz_ranger() {
 }
 
 zle -N vwz_ranger
-zle -N vwz_ranger!
+zle -N ranger!
 
-bindkey -s '\ez' "\eq vwz_ranger!\n"
+bindkey -s '\ez' "\eq ranger!\n"

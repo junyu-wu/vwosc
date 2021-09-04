@@ -1,0 +1,33 @@
+#autoload
+(( compstate[nmatches] )) &&
+    return 1
+
+[[ $_comp_tags == *( | local-)'directories '* ]] ||
+    return
+
+private tag=ancestor-directories
+_tags $tag
+_tags ||
+    return
+_requested $tag ||
+    return
+
+private -a ancestors=()
+private parent=$PWD:h
+while (( $#parent > 1 )); do
+  ancestors+=( $parent )
+  parent=$parent:h
+done
+
+local displ= expl=
+private a=
+while _next_label -V $tag expl 'ancestor directory'; do
+  for a in ${(aO)ancestors[@]}; do
+    displ=( "$a" )
+    [[ -z $PREFIX$SUFFIX ]] &&
+        displ=( "$a:t" )
+    compadd "$expl[@]" -d displ -P "${${(D)a:h}%/}/" -fW "${${a:h}%/}/" - "$a:t"
+  done
+done
+
+return 1  # Always continue to next completer.
