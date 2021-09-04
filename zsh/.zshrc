@@ -8,6 +8,7 @@
 #*******************************************************************************
 export VWZ="$HOME/.vwz"
 export ZSH=$VWZ
+
 source $VWZ/.vwzsh
 
 #*******************************************************************************
@@ -408,86 +409,6 @@ if [ -d $PREFIX/mu ]; then
 	export MU_DIR=/home/workspace/mail
 fi
 
-## proxy
-# slhp
-# set local http & https proxy
-function slhp()
-{
-	if [ "$1" = "-a" ]
-	then
-		path=$2
-
-		if [[ $path =~ ":" ]]
-		then
-			host=${path%:*}
-			post=${path##*:}
-
-			if [[ $host =~ "." ]]
-			then
-				echo "host is localhost, post is " $post
-			else
-				host="172.0.0.1"
-			fi
-
-			export http_proxy=$host:$post
-			export https_proxy=$http_proxy
-
-			echo "set http and https proxy is $host:$post";
-		else
-			post=${path##*:}
-
-			export http_proxy=127.0.0.1:$post
-			export https_proxy=$http_proxy
-
-			echo "set http and https proxy is 127.0.0.1:$2";
-		fi
-	elif [ "$1" = "-r" ]
-	then
-		unset http_proxy;
-		unset https_proxy;
-		echo "unset http and https proxy";
-	fi
-}
-
-## service
-# sctl
-# run service
-function sctl()
-{
-	if [ "$1" = "-s" ]
-	then
-		eval "sudo service $2 start";
-		echo "sudo service $2 start";
-	elif [ "$1" = "-r" ]
-	then
-		eval "sudo service $2 restart";
-		echo "sudo service $2 restart";
-	elif [ "$1" = "-q" ]
-	then
-		eval "sudo service $2 stop";
-		echo "sudo service $2 stop";
-	elif [ "$1" = "-t" ]
-	then
-		eval "sudo service $2 status";
-		echo "sudo service $2 status";
-	elif [ "$1" = "-h" ]
-	then
-		echo "sctl <option> [service name]"
-		echo "     -s       start service";
-		echo "     -r       restart service";
-		echo "     -q       stop service";
-		echo "     -t       status service";
-		echo "     -h       help";
-	else
-		echo "sctl <option> [service name]"
-		echo "     -s       start service";
-		echo "     -r       restart service";
-		echo "     -q       stop service";
-		echo "     -t       status service";
-		echo "     -h       help";
-	fi
-}
-
 ## keybinds
 # bindkey '^ ' autosuggest-accept
 
@@ -571,6 +492,8 @@ alias xkey="sudo xkeysnail --quiet $XKEYSNAIL_PATH/vwiss-emacs.py"
 alias xkeyl="sudo xkeysnail $XKEYSNAIL_PATH/vwiss-emacs.py"
 alias xhkey="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
 alias xhkeyl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
+alias xikey="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
+alias xikeyl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
 
 # msf alias
 alias msftidy="$MSFHOME/tools/dev/msftidy.rb"
