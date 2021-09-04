@@ -372,7 +372,7 @@ function convhistory {
 	sort $1 | # 排序
 		uniq | # 合并相同
 		# sed 's/^:( [0-9]*):[0-9]*;(.*)/\1::\2/g' |
-		awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,$1) " |"; print }'
+		awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print }'
 		# sed 's/^:\( [0-9]*\):\([0-9]*\);(.*)/\1::::\2/g'  |
 		# awk -F'[;]' '{print strftime("%F %T", $1/1000),$2}'
 }
