@@ -55,7 +55,7 @@ export XTERMCONTROL_HOME=$XTERM_HOME/share/xtermcontrol
 export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
 if [ -f "$HOME/.Xresources" ] ; then
-	xrdb -merge $HOME/.Xresources
+	xrdb -merge $HOME/.Xresources >> /dev/null 2>&1
 fi
 
 ## tmux
@@ -259,31 +259,32 @@ if [ -d "$POSTGRESQL_HOME" ] ; then
     PATH=$PATH:$POSTGRESQL_HOME/bin
 	export LD_LIBRARY_PATH=$POSTGRESQL_HOME/lib
 	export PGHOST=/tmp
+	export POSTGRESQL_USER_NAME=postgres
 fi
 
-# pgsql_server
+# pgsql
 # start/stop/restart pgsql server
-function pgsql_server ()
+function pgsql ()
 {
-	if [ "$1" = "-start" ]
+	if [ "$1" = "-s" ]
 	then
-		eval "su pgsql -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data -l $POSTGRESQL_HOME/log/logfile'"
+		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data -l $POSTGRESQL_HOME/log/logfile'"
 		echo "postgresql server started";
-	elif [ "$1" = "-stop" ]
+	elif [ "$1" = "-d"]
 	then
-		eval "su pgsql -c '$POSTGRESQL_HOME/bin/pg_ctl stop -D $POSTGRESQL_HOME/data'"
+		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl stop -D $POSTGRESQL_HOME/data'"
 		echo "postgresql server stoped";
-	elif [ "$1" = "-restart" ]
+	elif [ "$1" = "-r" ]
 	then
-		eval "su pgsql -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
+		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
 		echo "postgresql server restart";
-	elif [ "$1" = "-status" ]
+	elif [ "$1" = "-t" ]
 	then
-		eval "su pgsql -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
+		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
 		echo "postgresql server status";
-	elif [ "$1" = "-connect" ]
+	elif [ "$1" = "-c" ]
 	then
-		eval "su pgsql -c '$POSTGRESQL_HOME/bin/psql $2'"
+		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $2'"
 	fi
 }
 

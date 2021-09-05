@@ -521,7 +521,7 @@ zle -N sctl
 
 function vwz_transparent ()
 {
-	local transpro=$(print -r ${(q)"$(transset -t -a | awk '{print $4}')"})
+	local transpro=$(print -r ${(q)"$(transset -t -a | awk '{print $4}') 2>/dev/null"})
 
 	if [[ $transpro == 1 ]] {
 		CURRENT_STATUS=0
@@ -576,7 +576,7 @@ if [[ $IS_TRANSPARENT == "" ]] {
 	   TRANSPARENT_STATUS=$IS_TRANSPARENT
 }
 
-vwz_transparent
+vwz_transparent >> /dev/null 2>&1
 
 #*******************************************************************************
 #
@@ -625,7 +625,7 @@ alias l="ls -lah"
 alias s="du --max-depth=1 -h"
 alias f="df -h"
 alias r="source $HOME/.zshrc"
-alias pl="vwz_load_plugins"
+alias rlp="vwz_load_plugins"
 alias tsr="transparent_toggle"
 alias tx="transset -t -x"
 alias k="kill -9"
