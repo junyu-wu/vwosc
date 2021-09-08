@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Xournalpp
+Comment=Handwritten Editor
+GenericName=Text Editor
+Exec=/usr/local/xournalpp/bin/xournalpp
+Icon=applications-graphics-drawing
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=Utility;TextEditor;GTK;
+MimeType=text/plain;
+X-XFCE-Source=file:///usr/share/applications/mousepad.desktop
+Path=

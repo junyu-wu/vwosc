@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Emacs
+Comment=Emacs
+GenericName=Text Editor
+Exec=/usr/local/emacs/27.1/bin/emacs
+Icon=emacs
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=Utility;TextEditor;GTK;
+MimeType=text/plain;
+X-XFCE-Source=file:///usr/share/applications/mousepad.desktop
+Path=

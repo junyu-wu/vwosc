@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Florence Virtual Keyboard
+Comment=Florence Virtual Keyboard
+Exec=florence
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/florence.svg
+Categories=Application;Accessibility;
+X-XFCE-Source=file:///usr/share/applications/florence.desktop

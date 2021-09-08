@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Tmux
+Type=Application
+GenericName=Terminal emulator
+Comment=Terminal emulator
+Icon=utilities-terminal
+Exec=/usr/local/xterm/bin/xterm tmux
+Terminal=false
+Categories=Qt;System;TerminalEmulator;
+Actions=Dropdown;
+X-XFCE-Source=file:///usr/share/applications/qterminal.desktop
+
+Path=
+StartupNotify=false
+
+[Desktop Action Dropdown]
+Name=Drop-down terminal
+Exec=qterminal --drop
+Icon=utilities-terminal

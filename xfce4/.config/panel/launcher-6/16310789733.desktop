@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Terminal
+Comment=Terminal
+Exec=/usr/local/xterm/bin/xterm
+Icon=utilities-root-terminal
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=System;Utility;TerminalEmulator;
+X-Kali-Package=kali-menu
+X-XFCE-Source=file:///usr/share/applications/root-terminal.desktop
+Path=
