@@ -48,6 +48,8 @@ define_keymap(
     re.compile("Firefox|Google-chrome"),
     {
         # Type C-j to focus to the content
+        K("C-M-TAB"):
+        K("C-Shift-TAB"),
         K("C-j"):
         K("C-f6"),
         K("C-q"):
