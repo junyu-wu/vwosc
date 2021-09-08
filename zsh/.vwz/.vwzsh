@@ -570,9 +570,9 @@ zle -N transparent_toggle
 bindkey '^h' transparent_toggle
 
 if [[ $IS_TRANSPARENT == "" ]] {
-	   TRANSPARENT_STATUS=0 # 1 透明 0 不透明
+	TRANSPARENT_STATUS=0 # 1 透明 0 不透明
 } else {
-	   TRANSPARENT_STATUS=$IS_TRANSPARENT
+	TRANSPARENT_STATUS=$IS_TRANSPARENT
 }
 
 vwz_transparent >> /dev/null 2>&1
@@ -616,6 +616,7 @@ if [ -x /usr/bin/dircolors ]; then
     zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 fi
 
+alias al="alias"
 alias ...='cd ..'
 alias d="cd_switch_history"
 alias u="cd -"
@@ -623,18 +624,28 @@ alias p="cd .."
 alias l="ls -lah"
 alias s="du --max-depth=1 -h"
 alias f="df -h"
-alias r="source $HOME/.zshrc"
-alias rlp="vwz_load_plugins"
-alias tt="transparent_toggle"
+alias rc="source $HOME/.zshrc"
+alias rp="vwz_load_plugins"
 alias tx="transset -t -x"
 alias k="kill -9"
 alias pk="pkill -n"
 alias pg="ps -ef|grep"
+alias g="grep"
+alias af="al|g"
 
 alias lo="xfce4-session-logout -l"
-alias rbt="sudo reboot"
-alias pwo="sudo shutdown -h now"
+alias rb="sudo reboot"
+alias po="sudo shutdown -h now"
 alias sr="su - root"
+
+alias cpr="cp -r"
+alias md="mkdir"
+alias mdp="mkdir -p"
+
+alias tl="tmux ls"
+alias td="tmux a -d"
+alias tt="tmux a -t"
+alias tk="tmux kill-session -t"
 
 alias gi="git init"
 alias ga="git add ."
@@ -643,6 +654,7 @@ alias gp="git push"
 alias gt="git status"
 alias gr="git reset"
 alias gl="git pull"
+alias gf="git fetch"
 
 hash -d l="/usr/local"
 hash -d o="/opt"

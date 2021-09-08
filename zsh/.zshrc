@@ -382,16 +382,16 @@ function winesetup()
 	eval $winesh;
 }
 
-# wine32Exec
+# wine32exe
 # run wine 32 app
-function wine32Exec()
+function wine32exe()
 {
 	wineexecpath="Exec=env WINEPREFIX="$WINE_ENV_HOME/$1" wine-stable C:\\\\windows\\\\command\\\\start.exe /Unix $WINE_ENV_HOME/$1/dosdevices/c:/users/Public/Desktop/$2.lnk";
 	echo $wineexecpath
 	eval $wineexecpath
 }
 
-function wine32ExecForZH_CN()
+function wine32exe_cn()
 {
 	wineexecpath="env LC_ALL=zh_CN.UTF-8 LANGUAGE=zh_CN.UTF-8 WINEPREFIX="$WINE_ENV_HOME/$1" wine-stable C:\\\\windows\\\\command\\\\start.exe /Unix $WINE_ENV_HOME/$1/dosdevices/c:/users/Public/Desktop/$2.lnk";
 	echo $wineexecpath
@@ -415,51 +415,38 @@ fi
 # bindkey '^ ' autosuggest-accept
 
 ## alias
-# sys alias
-alias logout="xfce4-session-logout -l"
-alias sreboot="sudo reboot"
-alias poff="sudo shutdown -h now"
-
 # device
 alias fingeroff="xinput disable 17"
 
 # proxy alias
 alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json &"
-alias p4="proxychains4"
-alias privoxy="sudo service privoxy start"
+alias px="proxychains4"
+alias prx="sudo service privoxy start"
 
 # display
-alias xrdl="xrandr --output eDP-1 --left-of DP-2 --auto"
-alias xrdr="xrandr --output eDP-1 --right-of DP-2 --auto"
-alias xrds="xrandr --output DP-2 --auto"
-alias xrdc="xrandr --output DP-2 --same-as eDP-1"
-alias xrdk="xrandr --output DP-2 --off"
-alias xrdmp="xrandr --output eDP1 --mode "
-alias xrdme="xrandr --output DP-2 --mode "
+alias xrl="xrandr --output eDP-1 --left-of DP-2 --auto"
+alias xrr="xrandr --output eDP-1 --right-of DP-2 --auto"
+alias xrs="xrandr --output DP-2 --auto"
+alias xrc="xrandr --output DP-2 --same-as eDP-1"
+alias xrk="xrandr --output DP-2 --off"
+alias xrmp="xrandr --output eDP1 --mode "
+alias xrme="xrandr --output DP-2 --mode "
 
 # emacs alias
 alias ed="emacs --daemon"
-alias edfg="emacs --fg-daemon"
 alias ex="emacs &"
 alias et="emacs -nw"
 alias ek="emacsclient -e '(kill-emacs)'"
 alias ecx='emacsclient -nc "$@" -a ""'
 alias ect='emacsclient -t "$@" -a ""'
 
-# kill alias
-alias k9="kill -9"
-alias pkn="pkill -n"
-
-# ps alias
-alias peg="ps -ef|grep"
-
 # apt alias
 alias agi="sudo apt install"
-alias ags="sudo apt search"
+alias age="sudo apt search"
 alias agu="sudo apt update"
-alias agug="sudo apt upgrade"
-alias agud="sudo apt dist-upgrade"
-alias agrm="sudo apt autoremove"
+alias agg="sudo apt upgrade"
+alias agd="sudo apt dist-upgrade"
+alias agm="sudo apt autoremove"
 
 alias cdw="cd /home/vwx/workspace/"
 alias cdd="cd /home/vwx/Downloads/"
@@ -467,49 +454,27 @@ alias cdd="cd /home/vwx/Downloads/"
 # xterm
 alias xtc="xtermcontrol"
 
-# tmux alias
-alias tmls="tmux ls"
-alias tmad="tmux a -d"
-alias tmat="tmux a -t"
-alias tmks="tmux kill-session -t"
-
 # wmctrl
 alias ws="wm_switch_window"
 
-# git alias
-alias gint="git init"
-alias gad="git add ."
-alias gcmt="git commit -m"
-alias gps="git push"
-alias gst="git status"
-alias grs="git reset"
-alias gpl="git pull"
-
 # xkeysanil alias
-alias xkey="sudo xkeysnail --quiet $XKEYSNAIL_PATH/vwiss-emacs.py"
-alias xkeyl="sudo xkeysnail $XKEYSNAIL_PATH/vwiss-emacs.py"
-alias xhkey="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
-alias xhkeyl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
-alias xikey="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
-alias xikeyl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
+alias xk="sudo xkeysnail --quiet $XKEYSNAIL_PATH/vwiss-emacs.py"
+alias xkl="sudo xkeysnail $XKEYSNAIL_PATH/vwiss-emacs.py"
+alias xhk="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
+alias xhkl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
+alias xik="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
+alias xikl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
 
 # msf alias
 alias msftidy="$MSFHOME/tools/dev/msftidy.rb"
 
 # wine alias
 alias wine32="winesetup"
-alias wexe32="wine32Exec"
-alias wexe32cn="wine32ExecForZH_CN"
+alias wexe32="wine32exe"
+alias wexe32cn="wine32exe_cn"
 
 alias wechat="wexe32 'im/wx' wechat >> /dev/null 2>&1"
 alias wechatcn="wexe32cn 'im/wx' wechat"
-alias dding="wexe32cn 'im/dd' DingTalk"
 
 # calibra
 alias calibre="/opt/calibre/calibre"
-
-# axure
-alias axure="wexe32cn 'rp' axure"
-
-# enterprise architect
-alias ea="wexe32cn 'ea' ea"
