@@ -188,7 +188,21 @@ define_keymap(
     "Calibre")
 
 define_keymap(
-    re.compile("Emacs|XTerm|Vmware"),
+    re.compile("XTerm"),
+    {
+        # Cursor
+        K("C-p"):
+        with_mark(K("up")),
+        K("C-n"):
+        with_mark(K("down")),
+
+        # Cancel
+        K("C-g"): [K("esc"), set_mark(False)],
+    },
+    "XTerm")
+
+define_keymap(
+    re.compile("Emacs"),
     {
         # Cursor
         K("C-p"):
@@ -196,7 +210,7 @@ define_keymap(
         K("C-n"):
         with_mark(K("down")),
     },
-    "Firefox and Chrome")
+    "Emacs")
 
 # Emacs-like keybindings in non-Emacs applications
 define_keymap(

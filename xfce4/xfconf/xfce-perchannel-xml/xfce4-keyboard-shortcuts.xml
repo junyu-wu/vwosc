@@ -28,14 +28,12 @@
     </property>
     <property name="custom" type="empty">
       <property name="&lt;Primary&gt;&lt;Alt&gt;Delete" type="string" value="xflock4"/>
-      <property name="&lt;Alt&gt;F2" type="string" value="xfce4-appfinder --collapsed"/>
       <property name="&lt;Primary&gt;Escape" type="string" value="xfce4-popup-whiskermenu"/>
       <property name="Print" type="string" value="/usr/share/kali-themes/xfce4-screenshooter"/>
       <property name="&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;t" type="string" value="pkexec x-terminal-emulator"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
       <property name="&lt;Shift&gt;Print" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --region"/>
       <property name="&lt;Primary&gt;Print" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --fullscreen --clipboard"/>
-      <property name="&lt;Alt&gt;F3" type="string" value="xfce4-appfinder"/>
       <property name="XF86Mail" type="string" value="exo-open --launch MailReader"/>
       <property name="&lt;Super&gt;Print" type="string" value="kazam"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;l" type="string" value="xflock4"/>
@@ -54,6 +52,9 @@
       <property name="&lt;Super&gt;u" type="string" value="kali-undercover"/>
       <property name="&lt;Super&gt;q" type="string" value="firefox"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;s" type="string" value="xfdesktop --windowlist"/>
+      <property name="&lt;Super&gt;m" type="string" value="xfce4-settings-manager"/>
+      <property name="&lt;Super&gt;a" type="string" value="xfce4-appfinder"/>
+      <property name="&lt;Super&gt;c" type="string" value="xfce4-appfinder --collapsed"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">
