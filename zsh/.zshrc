@@ -415,9 +415,6 @@ fi
 # bindkey '^ ' autosuggest-accept
 
 ## alias
-# device
-alias fingeroff="xinput disable 17"
-
 # proxy alias
 alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json &"
 alias px="proxychains4"
@@ -446,10 +443,11 @@ alias age="sudo apt search"
 alias agu="sudo apt update"
 alias agg="sudo apt upgrade"
 alias agd="sudo apt dist-upgrade"
-alias agm="sudo apt autoremove"
+alias agr="sudo apt autoremove"
 
-alias cdw="cd /home/vwx/workspace/"
-alias cdd="cd /home/vwx/Downloads/"
+alias cdw="cd $HOME/workspace/"
+alias cdd="cd $HOME/Downloads/"
+alias cdv="cd $HOME/workspace/vwosc"
 
 # xterm
 alias xtc="xtermcontrol"

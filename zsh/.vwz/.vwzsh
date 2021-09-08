@@ -642,6 +642,10 @@ alias cpr="cp -r"
 alias md="mkdir"
 alias mdp="mkdir -p"
 
+alias xi="xinput"
+alias xie="xinput enable"
+alias xid="xinput disable"
+
 alias tl="tmux ls"
 alias td="tmux a -d"
 alias tt="tmux a -t"
