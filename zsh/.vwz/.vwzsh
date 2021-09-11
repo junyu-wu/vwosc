@@ -420,7 +420,15 @@ function vwz_load_plugins () {
 # zsh misc configure
 #
 #*******************************************************************************
+## terminal
+# echo -e -n "\x1b[\x30 q" # changes to blinking block
+# echo -e -n "\x1b[\x31 q" # changes to blinking block also
+# echo -e -n "\x1b[\x32 q" # changes to steady block
+# echo -e -n "\x1b[\x33 q" # changes to blinking underline
+# echo -e -n "\x1b[\x34 q" # changes to steady underline
+# echo -e -n "\x1b[\x35 q" # changes to blinking bar
 echo -e -n "\x1b[\x36 q" # changes to steady bar
+
 #以下字符视为单词的一部分
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 
@@ -562,7 +570,7 @@ function transparent_toggle ()
 
 		 transset -t -a "$1" >> /dev/null 2>&1
 		 TRANSPARENT_STATUS=1
-		 echo "set background transparency to $1"
+		 echo "set background transparency to $1 finished."
 	}
 }
 
@@ -576,6 +584,27 @@ if [[ $IS_TRANSPARENT == "" ]] {
 }
 
 vwz_transparent >> /dev/null 2>&1
+
+function compress_and_encrypt ()
+{
+	local outputfile="SECF$(date "+%Y%m%d%H%M%S").enc"
+	if [[ $2 != "" ]] {
+		   outputfile=$2
+	   }
+	tar -zcf - $1 | openssl aes-256-cbc -a -salt -iter 5 -out $outputfile
+	echo "encrypt $1 to $outputfile"
+}
+
+zle -N compress_and_encrypt
+
+function decompression_and_decrypt ()
+{
+	# decfile=$(print -r ${(q)"$(openssl aes-256-cbc -d -a -iter 5 -in $1 | tar -xzvf -)"})
+	openssl aes-256-cbc -d -a -iter 5 -in $1 | tar -xzvf -
+	# echo $decfile
+}
+
+zle -N decompression_and_decrypt
 
 #*******************************************************************************
 #
@@ -641,6 +670,9 @@ alias sr="su - root"
 alias cpr="cp -r"
 alias md="mkdir"
 alias mdp="mkdir -p"
+
+alias enc="compress_and_encrypt"
+alias dec="decompression_and_decrypt"
 
 alias xi="xinput"
 alias xie="xinput enable"
