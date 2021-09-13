@@ -58,25 +58,28 @@ xterm*selectToClipboard: true
 xterm*VT100*selectToClipboard: true
 
 ! keybinding
-xterm*vt100.translations: #override \n\
-						  Super <Key> S: maximize() \n\
-						  Super <Key> R: restore() \n\
-						  Alt <Key> W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
-						  Ctrl <Key> Y: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
-						  Ctrl <Key> V: scroll-forw(1,halfpage,m) \n\
-						  Alt <Key> V: scroll-back(1,halfpage,m) \n\
-						  Alt <Key> \>: scroll-to(end) \n\
-						  Alt <Key> \<: scroll-to(begin) \n\
-  						  Ctrl <Key> +: larger-vt-font() \n\
-						  Ctrl <Key> -: smaller-vt-font() \n\
-						  Ctrl <Key> =: set-vt-font(d) \n\
-  						  Alt <Key> +: larger-vt-font() \n\
-						  Alt <Key> -: smaller-vt-font() \n\
-						  Alt <Key> =: set-vt-font(d) \n\
-						  Alt <Key> Return:fullscreen() \n\
-						  !Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
-						  !Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
-						  !Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
+xterm*VT100.translations: #override \n\
+						  Ctrl Shift <Key>C: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  Ctrl Shift <Key>V: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1)
+
+						  ! Super <Key> S: maximize() \n\
+						  ! Super <Key> R: restore() \n\
+						  ! Alt <Key> W: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  ! Ctrl <Key> Y: insert-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0， CUT_BUFFER1) \n\
+						  ! Ctrl <Key> V: scroll-forw(1,halfpage,m) \n\
+						  ! Alt <Key> V: scroll-back(1,halfpage,m) \n\
+						  ! Alt <Key> \>: scroll-to(end) \n\
+						  ! Alt <Key> \<: scroll-to(begin) \n\
+  						  ! Ctrl <Key> +: larger-vt-font() \n\
+						  ! Ctrl <Key> -: smaller-vt-font() \n\
+						  ! Ctrl <Key> =: set-vt-font(d) \n\
+  						  ! Alt <Key> +: larger-vt-font() \n\
+						  ! Alt <Key> -: smaller-vt-font() \n\
+						  ! Alt <Key> =: set-vt-font(d) \n\
+						  ! Alt <Key> Return:fullscreen() \n\
+						  ! Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
+						  ! Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
+						  ! Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
 
 ! fullscreen
 xterm*fullscreen: never
