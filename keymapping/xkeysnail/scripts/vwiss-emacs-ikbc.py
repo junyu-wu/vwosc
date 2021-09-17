@@ -197,7 +197,7 @@ define_keymap(
         with_mark(K("down")),
 
         # Cancel
-        K("C-g"): [K("esc"), set_mark(False)],
+        # K("C-g"): [K("esc"), set_mark(False)],
     },
     "XTerm")
 

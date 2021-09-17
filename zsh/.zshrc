@@ -9,7 +9,7 @@
 export VWZ="$HOME/.vwz"
 export ZSH=$VWZ
 
-IS_TRANSPARENT=1
+IS_TRANSPARENT=0
 
 source $VWZ/.vwzsh
 
@@ -25,7 +25,7 @@ export NAME=WuJunyu
 export EMAIL=vistar_w@hotmail.com
 
 ## emacs
-export EMACS_HOME=$PREFIX/emacs/27.1
+export EMACS_HOME=$PREFIX/emacs/27.2
 export PATH=$PATH:$EMACS_HOME/bin
 
 
@@ -39,15 +39,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 	export EDITOR=emacs
 	fi
 fi
-
-## terminal
-# echo -e -n "\x1b[\x30 q" # changes to blinking block
-# echo -e -n "\x1b[\x31 q" # changes to blinking block also
-# echo -e -n "\x1b[\x32 q" # changes to steady block
-# echo -e -n "\x1b[\x33 q" # changes to blinking underline
-# echo -e -n "\x1b[\x34 q" # changes to steady underline
-# echo -e -n "\x1b[\x35 q" # changes to blinking bar
-echo -e -n "\x1b[\x36 q" # changes to steady bar
 
 ## xterm
 export XTERM_HOME=$PREFIX/xterm
@@ -108,8 +99,8 @@ function wm_switch_window () {
 
 	print "activate windows:"
 	wm_windows_list
+	select=""
 	vared -p 'select: ' -c select
-	# print $sel
 	local selected=$(wm_windows_list $select)
 
 	$(wmctrl -x -a $selected)
@@ -204,9 +195,10 @@ export PATH=$PATH:$CONDA_HOME/bin
 
 ## java
 # export JAVA_HOME=$PREFIX/java/jdk8
-# export PATH=$PATH:$JAVA_HOME/bin
-# _SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
-# unset _JAVA_OPTIONS
+# export PATH=$PATH:.
+# export CLASSPATH=
+_SILENT_JAVA_OPTIONS="$_JAVA_OPTIONS"
+unset _JAVA_OPTIONS
 # alias java='java "$_SILENT_JAVA_OPTIONS"'
 
 ## rust
@@ -225,7 +217,7 @@ export LUA_HOME=$PREFIX/lua
 export PATH=$PATH:$LUA_HOME/bin
 
 ## maven
-export MAVEN_HOME=$PREFIX/maven/3.6.3
+export MAVEN_HOME=$PREFIX/maven/3.8.2
 export PATH=$PATH:$MAVEN_HOME/bin
 
 ## nodejs
@@ -464,7 +456,7 @@ alias xik="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
 alias xikl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
 
 # msf alias
-alias msftidy="$MSFHOME/tools/dev/msftidy.rb"
+alias msftidy="ruby '$MSF_HOME/tools/dev/msftidy.rb'"
 
 # wine alias
 alias wine32="winesetup"
@@ -475,4 +467,6 @@ alias wechat="wexe32 'im/wx' wechat >> /dev/null 2>&1"
 alias wechatcn="wexe32cn 'im/wx' wechat"
 
 # calibra
-alias calibre="/opt/calibre/calibre"
+alias calibre="/opt/calibre/calibre &"
+
+# xi | sed 's/[⎜|↳|⎡|⎣]//g' | sed -n '/ikbc/Ip' | awk '{sub(/^[\t ]*/,"");print}'

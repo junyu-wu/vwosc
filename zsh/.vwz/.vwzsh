@@ -420,7 +420,7 @@ function vwz_load_plugins () {
 # zsh misc configure
 #
 #*******************************************************************************
-## terminal
+## terminal cursor
 # echo -e -n "\x1b[\x30 q" # changes to blinking block
 # echo -e -n "\x1b[\x31 q" # changes to blinking block also
 # echo -e -n "\x1b[\x32 q" # changes to steady block
@@ -651,6 +651,7 @@ alias d="cd_switch_history"
 alias u="cd -"
 alias p="cd .."
 alias l="ls -lah"
+alias ll="ls -lh"
 alias s="du --max-depth=1 -h"
 alias f="df -h"
 alias rc="source $HOME/.zshrc"
@@ -682,6 +683,8 @@ alias tl="tmux ls"
 alias td="tmux a -d"
 alias tt="tmux a -t"
 alias tk="tmux kill-session -t"
+alias ts="tmux switch-client -t"
+alias tu="unse TMUX"
 
 alias gi="git init"
 alias ga="git add ."
