@@ -444,44 +444,44 @@ export MANPATH=$PREFIX/man:$MANPATH
 setopt CONTINUE_ON_ERROR
 
 ## proxy
-# slhp
+# setpx
 # set local http & https proxy
-function slhp()
+function setpx()
 {
-	if [ "$1" = "-a" ]
-	then
-		path=$2
+	while getopts 'a:r' OPT
+	do
+		case $OPT in
+			a) local path=$OPTARG
+			   if [[ $path =~ ":" ]]
+			   then
+				   local host=${path%:*}
+				   local post=${path##*:}
 
-		if [[ $path =~ ":" ]]
-		then
-			host=${path%:*}
-			post=${path##*:}
+				   if [[ $host =~ "." ]]
+				   then
+					   echo "host is localhost, post is " $post
+				   else
+					   host="172.0.0.1"
+				   fi
 
-			if [[ $host =~ "." ]]
-			then
-				echo "host is localhost, post is " $post
-			else
-				host="172.0.0.1"
-			fi
+				   export http_proxy=$host:$post
+				   export https_proxy=$http_proxy
 
-			export http_proxy=$host:$post
-			export https_proxy=$http_proxy
+				   echo "set http and https proxy is $host:$post";
+			   else
+				   local post=${path##*:}
 
-			echo "set http and https proxy is $host:$post";
-		else
-			post=${path##*:}
+				   export http_proxy=127.0.0.1:$post
+				   export https_proxy=$http_proxy
 
-			export http_proxy=127.0.0.1:$post
-			export https_proxy=$http_proxy
-
-			echo "set http and https proxy is 127.0.0.1:$2";
-		fi
-	elif [ "$1" = "-r" ]
-	then
-		unset http_proxy;
-		unset https_proxy;
-		echo "unset http and https proxy";
-	fi
+				   echo "set http and https proxy is 127.0.0.1:$2";
+			   fi;;
+			r) unset http_proxy
+			   unset https_proxy
+			   echo "unset http and https proxy";;
+			*) return 1;;
+		esac
+	done
 }
 
 zle -N slhp
@@ -491,38 +491,40 @@ zle -N slhp
 # run service
 function sctl()
 {
-	if [ "$1" = "-s" ]
-	then
-		eval "sudo service $2 start";
-		echo "sudo service $2 start";
-	elif [ "$1" = "-r" ]
-	then
-		eval "sudo service $2 restart";
-		echo "sudo service $2 restart";
-	elif [ "$1" = "-q" ]
-	then
-		eval "sudo service $2 stop";
-		echo "sudo service $2 stop";
-	elif [ "$1" = "-t" ]
-	then
-		eval "sudo service $2 status";
-		echo "sudo service $2 status";
-	elif [ "$1" = "-h" ]
-	then
-		echo "sctl <option> [service name]"
-		echo "     -s       start service";
-		echo "     -r       restart service";
-		echo "     -q       stop service";
-		echo "     -t       status service";
-		echo "     -h       help";
-	else
-		echo "sctl <option> [service name]"
-		echo "     -s       start service";
-		echo "     -r       restart service";
-		echo "     -q       stop service";
-		echo "     -t       status service";
-		echo "     -h       help";
-	fi
+	sctl_help ()
+	{
+		cat << EOF
+sctl - like service or systemctl
+
+Usage: sctl [options] [<args>]
+  sctl -s <service>
+
+Options:
+  -h      Show this help message.
+  -s      Start service.
+  -r      Restart service.
+  -t      Check service status.
+  -q      Stop service.
+EOF
+	}
+
+	while getopts 's:r:q:t:h' OPT
+	do
+		case $OPT in
+			h) sctl_help; return 1;;
+			s) eval "sudo service $2 start";
+			   echo "sudo service $2 start";;
+			r) eval "sudo service $2 restart";
+			   echo "sudo service $2 restart";;
+			q) eval "sudo service $2 stop";
+			   echo "sudo service $2 stop";;
+			t) eval "sudo service $2 status";
+			   echo "sudo service $2 status";;
+			*) sctl_help; return 1;;
+		esac
+	done
+
+	unset -f sctl_help
 }
 
 zle -N sctl

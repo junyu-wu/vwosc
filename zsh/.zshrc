@@ -73,16 +73,14 @@ export PATH=$PATH:$UCTAGS_HOME/bin
 export WMCTRL_HOME=$PREFIX/wmctrl
 export PATH=$PATH:$WMCTRL_HOME/bin
 
-function wm_windows_list() {
-
+function wm_windows_list()
+{
 	local wms=$(print -r ${(q)"$(wmctrl -x -l)"})
 	local rows=(${(s:\n:)wms})
 
 	for i ({1..$#rows}) {
-
 			local columns=(${=${rows[i]//\\/' '}})
 		if [[ "$1" == "" ]] {
-
 			printf "%s: %s\n" $i $columns[3]
 		} else {
 			   if [[ $1 == "$i" ]] {
@@ -95,8 +93,8 @@ function wm_windows_list() {
 
 }
 
-function wm_switch_window () {
-
+function wm_switch_window ()
+{
 	print "activate windows:"
 	wm_windows_list
 	select=""
@@ -258,26 +256,20 @@ fi
 # start/stop/restart pgsql server
 function pgsql ()
 {
-	if [ "$1" = "-s" ]
-	then
-		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data -l $POSTGRESQL_HOME/log/logfile'"
-		echo "postgresql server started";
-	elif [ "$1" = "-d"]
-	then
-		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl stop -D $POSTGRESQL_HOME/data'"
-		echo "postgresql server stoped";
-	elif [ "$1" = "-r" ]
-	then
-		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
-		echo "postgresql server restart";
-	elif [ "$1" = "-t" ]
-	then
-		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
-		echo "postgresql server status";
-	elif [ "$1" = "-c" ]
-	then
-		eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $2'"
-	fi
+	while getopts 'srqta:' OPT
+	do
+		case $OPT in
+			s) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data -l $POSTGRESQL_HOME/log/logfile'"
+			   echo "postgresql server started";;
+			q) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl stop -D $POSTGRESQL_HOME/data'"
+			   echo "postgresql server stoped";;
+			r) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
+			   echo "postgresql server restart";;
+			a) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $OPTARG'";;
+			t) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
+			   echo "postgresql server status";;
+		esac
+	done
 }
 
 ## nyxt
