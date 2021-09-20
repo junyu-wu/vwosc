@@ -1,0 +1,6 @@
+
+[config]
+cmd=rcm
+
+[custom]
+# user_home=$HOME/.vwrcmmm
