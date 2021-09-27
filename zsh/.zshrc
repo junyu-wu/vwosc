@@ -383,7 +383,7 @@ function wine32exe_cn()
 }
 
 ## xkeysnail
-export XKEYSNAIL_PATH=$HOME/.config/xkeysnail/scripts
+export XKEYSNAIL_PATH=$HOME/.config/xkeysnail
 
 ## trojan
 export TROJAN_HOME=/usr/local/trojan
