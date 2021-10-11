@@ -11,7 +11,6 @@ $VWRCM_CMD - dotfiles manager
 
 Usage: $VWRCM_CMD [options] <commands> [<args>]
   $VWRCM_CMD add (<file> [$DOT_DIR/path/to/the/file]) | <symboliclinks>...
-  $VWRCM_CMD unlink <symboliclinks>...
   $VWRCM_CMD clear
 
 Commands:
