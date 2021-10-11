@@ -23,6 +23,7 @@ vwrcm ()
 	trap vwrcm_exit EXIT KILL QUIT
 	local user_home=$(vwrcm_read_config custom user_home)
 	local cmd=$(vwrcm_read_config config cmd)
+	local sub_dir=$(vwrcm_read_config config sub_dir)
 
 	VWRCM_USER_DIR=${user_home:="$HOME/.vwrcm"}
 	VWRCM_CMD=${cmd:="vwrcm"}

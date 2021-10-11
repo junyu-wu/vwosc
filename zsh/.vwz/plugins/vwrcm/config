@@ -3,4 +3,5 @@
 cmd=rcm
 
 [custom]
-# user_home=$HOME/.vwrcmmm
+# user_home=$HOME/.vwrcm
+# sub_dir=$HOME/.vwrcm/link_store
