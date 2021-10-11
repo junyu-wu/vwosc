@@ -6,19 +6,18 @@ patch:
   ##
   "menu/page_size": 9 # 显示9个候选
 
-  schema_list:  # 對於列表類型，現在無有辦法指定如何添加、消除或單一修改某項，於是要在定製檔中將整個列表替換！
+  "schema_list":  # 對於列表類型，現在無有辦法指定如何添加、消除或單一修改某項，於是要在定製檔中將整個列表替換！
     - schema: luna_pinyin
-    # - schema: double_pinyin_flypy
 
   "switcher/hotkeys":  # 這個列表裏每項定義一個快捷鍵，使哪個都中
     - "Control+grave"  # 你看寫法並不是 Ctrl+` 而是與 IBus 一致的表示法
 
 
-  style/horizontal: true
+  "style/horizontal": true
 
-  translator/dictionary: luna_pinyin.sogou
+  "translator/dictionary": luna_pinyin.sogou
 
-  key_binder/bindings: # 中括号候选翻页
+  "key_binder/bindings": # 中括号候选翻页
     - when: paging
       accept: bracketleft
       send: Page_Up
@@ -28,8 +27,66 @@ patch:
     - when: has_menu
       accept: Control+g
       send: Escape
+    - accept: "Control+p"
+      send: "Up"
+      when: "composing"
+    - accept: "Control+n"
+      send: "Down"
+      when: "composing"
+    - accept: "Control+b"
+      send: "Left"
+      when: "composing"
+    - accept: "Control+f"
+      send: "Right"
+      when: "composing"
+    - accept: "Alt+b"
+      send: "Shift+Left"
+      when: "composing"
+    - accept: "Alt+f"
+      send: "Shift+Right"
+      when: "composing"
+    - accept: "Control+a"
+      send: "Home"
+      when: "composing"
+    - accept: "Control+e"
+      send: "End"
+      when: "composing"
+    - accept: "Control+d"
+      send: "Delete"
+      when: "composing"
+    # 这个用不了，不过估计也用不到。
+    # - accept: "Control+k"
+    #   send: "Shift+Delete"
+    #   when: "composing"
+    - accept: "Control+h"
+      send: "BackSpace"
+      when: "composing"
+    - accept: "Alt+h"
+      send: "Shift+BackSpace"
+      when: "composing"
+    - accept: "Control+g"
+      send: "Escape"
+      when: "composing"
+    - accept: "Control+bracketleft"
+      send: "Escape"
+      when: "composing"
+    - accept: "Alt+v"
+      send: "Page_Up"
+      when: "composing"
+    - accept: "Control+v"
+      send: "Page_Down"
+      when: "composing"
+    - accept: "Tab"
+      send: "Down"
+      when: "has_menu"
+    - accept: "ISO_Left_Tab"
+      send: "Up"
+      when: "has_menu"
+    - accept: "Shift+Tab"
+      send: "Up"
+      when: "has_menu"
 
-  'speller/algebra':
+  "speller/algebra":
     - erase/^xx$/                      # 第一行保留
 
     # 模糊音定義

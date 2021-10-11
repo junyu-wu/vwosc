@@ -6,7 +6,7 @@ trojan/config.json.now
 trojan/config.json.txt
 trojan/gui-config.json
 
-vwe/*
+emacs/.emacs.d/*
 sec/*
 ssh/*
 fonts/*
