@@ -1,29 +1,33 @@
 #!/bin/zsh
 zmodload -Fa zsh/files b:zf_rm
-zmodload -Fa zsh/parameter p:funcstack p:functions
-builtin autoload -Uz is-at-least
+zmodload -F zsh/parameter p:funcstack p:functions
+builtin autoload -RUz is-at-least
 
-typeset -gHa _autocomplete_compdef=()
+typeset -gHa _autocomplete__compdef=()
 compdef() {
-  _autocomplete_compdef+=( "${(j: :)${(@q+)@}}" )
+  typeset -gHa _autocomplete__compdef=( $_autocomplete__compdef[@] "${(j: :)${(@q+)@}}" )
 }
 
 [[ -v functions[_bash_complete] ]] ||
   _bash_complete compgen complete () {
     unfunction _bash_complete compgen complete
-    builtin autoload -Uz bashcompinit
+    builtin autoload +X -Uz bashcompinit
     bashcompinit
     bashcompinit() { : }
     ${(%):-%N} "$@"
   }
 
 .autocomplete.compinit.precmd() {
-  [[ -z $CDPATH ]] &&
+  emulate -L zsh
+  setopt $_autocomplete__func_opts[@]
+
+  [[ -v CDPATH && -z $CDPATH ]] &&
       unset CDPATH cdpath
 
   # Decrease Oh My Zsh start-up time. See below.
+  local -Pa omzdump=()
   [[ -v ZSH_COMPDUMP ]] &&
-    private -a omzdump=( ${(f)"$( < $ZSH_COMPDUMP )"} )
+    omzdump=( ${(f)"$( < $ZSH_COMPDUMP )"} )
 
   typeset -gU FPATH fpath=( ~zsh-autocomplete/functions/completion $fpath[@] )
   typeset -gH \
@@ -32,14 +36,14 @@ compdef() {
   if [[ -v _comps && $_comps[-command-] != _autocomplete.command ]]; then
     zf_rm -f $_comp_dumpfile
   else
-    private -a comps=( ~zsh-autocomplete/functions/completion/_autocomplete.*~*.zwc(N-.) )
+    local -Pa comps=( ~zsh-autocomplete/functions/completion/_autocomplete.*~*.zwc(N-.) )
 
     if ! (( $#comps )); then
       print -u2 -- 'zsh-autocomplete: Failed to find completion functions. Aborting.'
       return 66
     fi
 
-    private f=
+    local -P f=
     for f in $comps[@]; do
       if ! [[ -v functions[$f:t] && $f -ot $_comp_dumpfile ]]; then
         zf_rm -f $_comp_dumpfile
@@ -50,16 +54,16 @@ compdef() {
 
   if ! [[ -v _comp_setup && -f $_comp_dumpfile ]]; then
     unfunction compdef compinit 2> /dev/null
-    builtin autoload -Uz compinit
     bindkey() { : }
     {
-      compinit -C -d $_comp_dumpfile
+      builtin autoload +X -Uz compinit
+      compinit -d $_comp_dumpfile
     } always {
       unfunction bindkey
     }
 
     # Prevent Oh My Zsh from deleting comp dump file.
-    (( $#omzdump > 0 )) &&
+    (( ${#omzdump[@]} > 0 )) &&
       tee -a "$ZSH_COMPDUMP" &> /dev/null <<EOF
 $omzdump[-2]
 $omzdump[-1]
@@ -68,16 +72,17 @@ EOF
 
   compinit() { : }
 
-  private args=
-  for args in "$_autocomplete_compdef[@]"; do
+  local -P args=
+  for args in "$_autocomplete__compdef[@]"; do
     eval "compdef $args"
   done
-  unset _autocomplete_compdef
+  unset _autocomplete__compdef
 
   (
+    local -a reply=()
     local cache_dir=
-    if zstyle -s ':completion:*' cache-path cache_dir; then
-      private src= bin=
+    if builtin zstyle -s ':completion:*' cache-path cache_dir; then
+      local -P src= bin=
       for src in $cache_dir/*~**.zwc~**/.*(N-.); do
         bin=$src.zwc
         if [[ ! -e $bin || $bin -ot $src ]]; then
@@ -90,53 +95,46 @@ EOF
   .autocomplete.patch _main_complete
   _main_complete() {
     local -i _autocomplete__reserved_lines=0
-    private -i ret=1
-    unset _autocomplete__partial_list
+    local -Pi ret=1
+    unset _autocomplete__partial_list _autocomplete__unambiguous
 
     compstate[insert]=menu  # To get the best output from `_expand` (and some other functions).
     compstate[last_prompt]=yes  # Completion doesn't stay on the same command line without this.
     compstate[list]='list force packed rows' # `_setup` doesn't work well for this.
     unset 'compstate[vared]'
 
-    local +h -a comppostfuncs=( _autocomplete._main_complete.post "$comppostfuncs[@]" )
-    {
-      # Don't break `_complete_help`, async completion, etc.
+    if ! is-at-least 5.8.1; then
       [[ -v functions[compadd] ]] ||
           functions[compadd]=$functions[.autocomplete.compadd]
-
-      .autocomplete._main_complete "$@"
-      ret=$?
-
-    } always {
-      # Stop `_complete_help` from complaining.
-      [[ $WIDGET == _complete_help ]] ||
-          unfunction compadd
-    }
-
-    return ret
-  }
-
-  .autocomplete.compadd() {
-    if [[ $_completer == expand* ]]; then
-      builtin compadd -fW "${${${words[CURRENT]:#[~/]*}:+$PWD/}:-/}" "$@"
-    else
-      builtin compadd "$@"
     fi
+
+    local +h -a comppostfuncs=( _autocomplete._main_complete.post "$comppostfuncs[@]" )
+    .autocomplete._main_complete "$@"
   }
+
+  is-at-least 5.8.1 ||
+      .autocomplete.compadd() {
+        if [[ $_completer == expand* ]]; then
+          builtin compadd -fW "${${${words[CURRENT]:#[~/]*}:+$PWD/}:-/}" "$@"
+        else
+          builtin compadd "$@"
+        fi
+      }
 
   _autocomplete._main_complete.post() {
-    compstate[list_max]=0
-    MENUSCROLL=0
+    [[ $WIDGET != _complete_help ]] &&
+        unfunction compadd 2> /dev/null
     _autocomplete.all_matches
     _autocomplete.unambiguous
+    compstate[list_max]=0
+    MENUSCROLL=0
   }
 
   .autocomplete.patch _expand
   _expand() {
-
     if _autocomplete.is_glob; then
-      [[ $words[CURRENT] == *[^*] && $WIDGET != _complete_help ]] &&
-          local +h ISUFFIX="*"
+      compstate[pattern_insert]=  # Make compstate[insert]=unambiguous work.
+      compstate[pattern_match]=\* # Smartly append * to the pattern.
 
       .autocomplete._expand "$@"
       return
@@ -148,7 +146,7 @@ EOF
     (( compstate[nmatches] > 1 )) &&
         return 0
 
-    private exp=${(Q)compstate[unambiguous]} word=$IPREFIX$PREFIX$SUFFIX$ISUFFIX
+    local -P exp=${(Q)compstate[unambiguous]} word=$IPREFIX$PREFIX$SUFFIX$ISUFFIX
 
     [[ $exp == ($word|$compstate[unambiguous]) ]] &&
       return 0
@@ -162,18 +160,11 @@ EOF
 
   .autocomplete.patch _complete
   _complete() {
-    .autocomplete._complete "$@"
-    private -i ret=$?
-    (( ret )) &&
-        _comp_mesg='' # Otherwise, the next completer won't get tried.
-
-    [[ $compstate[context] == command && CURRENT -eq 1 && -z $PREFIX$SUFFIX ]] &&
-        return ret
-
-    _autocomplete.ancestor_dirs "$@"
-    _autocomplete.recent_paths "$@"
-    return ret
+    .autocomplete._complete "$@" ||
+        _autocomplete.ancestor_dirs "$@" ||
+            _autocomplete.recent_paths "$@"
   }
+  # functions -T _complete
 
   .autocomplete.patch _approximate
   _approximate() {
@@ -184,13 +175,13 @@ EOF
     _autocomplete.is_glob &&
         return 1
 
-    private -i ret=1
+    local -Pi ret=1
     {
       [[ -v functions[compadd] ]] &&
         functions[.autocomplete.__tmp__]=$functions[compadd]
 
       compadd() {
-        private ppre="$argv[(I)-p]"
+        local -P ppre="$argv[(I)-p]"
 
         [[ ${argv[(I)-[a-zA-Z]#U[a-zA-Z]#]} -eq 0 && "${#:-$PREFIX$SUFFIX}" -le _comp_correct ]] &&
             return
@@ -199,15 +190,17 @@ EOF
           PREFIX="~(#a${_comp_correct})${PREFIX[2,-1]}"
         else
           PREFIX="(#a${_comp_correct})$PREFIX"
-      fi
+        fi
 
         builtin compadd "$@"
       }
 
       .autocomplete._approximate "$@"
       ret=$?
-
+      _lastdescr=( ${_lastdescr[@]:#corrections} )
     } always {
+      [[ -v functions[compadd] ]] &&
+          unfunction compadd
       if [[ -v functions[.autocomplete.__tmp__] ]]; then
         functions[compadd]=$functions[.autocomplete.__tmp__]
         unfunction .autocomplete.__tmp__
@@ -220,7 +213,7 @@ EOF
     .autocomplete.patch _wanted
     _wanted() {
       if [[ $funcstack == *_parameters* ]] &&
-          zstyle -T ":completion:${curcontext}:parameters" verbose; then
+          builtin zstyle -T ":completion:${curcontext}:parameters" verbose; then
         local -a params=( $@[(re)-,-1] )
         shift -p $#params
         shift params
@@ -229,11 +222,11 @@ EOF
         local -a displays=()
 
         local sep=
-        zstyle -s ":completion:${curcontext}:parameters" list-separator sep ||
+        builtin zstyle -s ":completion:${curcontext}:parameters" list-separator sep ||
             sep=--
 
-        private -i MBEGIN= MEND=
-        private MATCH=
+        local -Pi MBEGIN= MEND=
+        local -P MATCH=
         zformat -a displays " $sep " \
             "${(@)params[@]:/(#m)*/${MATCH}:${${(kv)${(P)MATCH}}[1,COLUMNS]}}"
         displays=( "${(@)displays[@]//(#m)[^[:print:]]##/${(q+)MATCH}}" )

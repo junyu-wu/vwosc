@@ -1,24 +1,24 @@
 #!/bin/zsh
-unfunction .autocomplete.complete-word.post 2> /dev/null
-builtin autoload -Uz .autocomplete.complete-word.post
+zmodload -F zsh/terminfo p:terminfo
+local -a match=() mbegin=() mend=()  # `zstyle` for some reason assigns these.
+
+local -P key_name=
+case $KEYS in
+  ( $'\t'           ) key_name=tab ;;
+  ( $terminfo[kcbt] ) key_name=shift-tab ;;
+esac
 
 local +h curcontext=${curcontext:-${WIDGET}:::}
 local +h -a comppostfuncs=( .autocomplete.complete-word.post "$comppostfuncs[@]" )
-if [[ $WIDGET == *menu-* && -v _autocomplete__partial_list ]] ||
-    ( ( [[ "$KEYS" == "$terminfo[kcbt]" ]] ||
-        zstyle -t ":autocomplete:${(kL)key[(Re)$KEYS]}:" insert-unambiguous
-      ) && [[
-          $_lastcomp[iprefix]$_lastcomp[prefix]$_lastcomp[suffix]$_lastcomp[isuffix] !=
-              *${_lastcomp[unambiguous]:#?}*
-      ]] ); then
-  compstate[old_list]=
+
+if [[ -z $compstate[old_list] ]] || [[ $WIDGET == *menu-* && -v _autocomplete__partial_list ]] ||
+    ( builtin zstyle -t ":autocomplete:${key_name}:" insert-unambiguous &&
+        [[ -n $_autocomplete__unambiguous ]] ); then
   _main_complete
-elif [[ -n $compstate[old_list] ]]; then
+else
   compstate[old_list]=keep
-  [[ "$KEYS" == "$terminfo[kcbt]" && $_lastcomp[tags] == *all-matches ]] &&
+  [[ $key_name == shift-tab && $_lastcomp[tags] == *all-matches ]] &&
       compstate[insert]=all
   _main_complete -
-else
-  _main_complete
 fi
-return 0  # Prevent beeping.
+[[ _lastcomp[nmatches] -gt 0 && -n $compstate[insert] ]]

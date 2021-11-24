@@ -46,7 +46,6 @@
       <property name="&lt;Primary&gt;&lt;Alt&gt;BackSpace" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --window"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;backslash" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --window --clipboard"/>
       <property name="&lt;Shift&gt;&lt;Alt&gt;bar" type="string" value="/usr/share/kali-themes/xfce4-screenshooter --region --clipboard"/>
-      <property name="&lt;Super&gt;e" type="string" value="/usr/local/emacs/27.1/bin/emacs"/>
       <property name="&lt;Super&gt;h" type="string" value="/usr/local/xournalpp/bin/xournalpp"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;t" type="string" value="/usr/local/xterm/bin/xterm tmux"/>
       <property name="&lt;Super&gt;u" type="string" value="kali-undercover"/>
@@ -55,6 +54,10 @@
       <property name="&lt;Super&gt;m" type="string" value="xfce4-settings-manager"/>
       <property name="&lt;Super&gt;a" type="string" value="xfce4-appfinder"/>
       <property name="&lt;Super&gt;c" type="string" value="xfce4-appfinder --collapsed"/>
+      <property name="&lt;Super&gt;F2" type="string" value="/usr/local/xterm/bin/xterm"/>
+      <property name="&lt;Super&gt;s" type="string" value="xfce4-popup-windowmenu"/>
+      <property name="&lt;Super&gt;e" type="string" value="/usr/local/emacs/27.2/bin/emacs"/>
+      <property name="&lt;Super&gt;v" type="string" value="vmware"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">

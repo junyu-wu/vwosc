@@ -1,0 +1,70 @@
+#+OPTIONS: reveal_title_slide:"<h2>%t</h2><h3>%s</h3><h6>%a</h6><h6>%d</h6>"
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil
+#+REVEAL_TRANS: slide
+#+REVEAL_THEME: league
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+#+REVEAL_HLEVEL: 2
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+LATEX_COMPILER: xelatex
+#+CATEGORY:[Default]
+#+TAGS:[Note]
+#+TITLE: os-init
+#+SUBTITLE:by WuJunyu
+#+AUTHOR:WuJunyu
+#+DATE:2021-11-22
+#+EMAIL:vistar_w@hotmail.com
+* init
+# 官方源
+# deb http://http.kali.org/kali kali-rolling main non-free contrib
+# deb-src http://http.kali.org/kali kali-rolling main non-free contrib
+
+# 阿里云
+deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
+deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
+
+# 中科大
+# deb http://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+# deb-src http://mirrors.ustc.edu.cn/kali kali-rolling main non-free contrib
+
+# 清华大学
+# deb http://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/kali kali-rolling main contrib non-free
+
+# 浙大
+# deb http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free
+# deb-src http://mirrors.zju.edu.cn/kali kali-rolling main contrib non-free
+
+# 东软大学
+# deb http://mirrors.neusoft.edu.cn/kali kali-rolling/main non-free contrib
+# deb-src http://mirrors.neusoft.edu.cn/kali kali-rolling/main non-free contrib
+
+# 重庆大学
+# deb http://http.kali.org/kali kali-rolling main non-free contrib
+# deb-src http://http.kali.org/kali kali-rolling main non-free contrib
+
+apt install build-essential gcc pkg-config autoconf automake cmake curl \
+libgtk-3-dev libxpm-dev libjpeg-dev \
+libpng-dev libgif-dev libtiff-dev \
+gnutls-dev libtinfo-dev mailutils \
+libwebkit2gtk-4.0-dev libgnutls28-dev libmagickwand-dev \
+libgpm-dev libotf-dev libsystemd-dev \
+libjansson-dev libgccjit-10-dev texinfo \
+libevent-dev bison \
+libxaw7-dev \
+ibus ibus-rime \
+proxychains4 \
+xclip \
+ranger \
+git \
+wine winetricks 
+
+./configure --prefix=/usr/local/emacs/27.2 \
+--with-modules --with-x-toolkit=gtk --with-xwidgets \
+--with-cairo --with-pdumper --with-mailutils \
+--without-pop --with-imagemagick --with-gnutls \
+--with-rsvg --without-lcms2 --with-dumping=unexec \
+--with-json --with-xpm --with-sound \
+--with-zlib --with-threads --with-gconf \
+--with-gsettings --with-gpm --with-x \
+--with-xft --with-libotf --with-m17n-flt \
+--with-lcms2 --with-nativecomp --with-no-titlebar

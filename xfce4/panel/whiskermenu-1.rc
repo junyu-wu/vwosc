@@ -1,5 +1,5 @@
 favorites=xfce4-terminal-emulator.desktop,root-terminal.desktop,xfce4-file-manager.desktop,xfce-text-editor.desktop,xfce4-web-browser.desktop,kali-www.desktop,kali-docs.desktop,kali-bugs.desktop,offsec-training.desktop,exploit-database.desktop,vulnhub.desktop
-recent=mate-calc.desktop,xfce4-run.desktop,blueman-manager.desktop,lightdm-gtk-greeter-settings.desktop,panel-preferences.desktop,qterminal.desktop,vmware-workstation.desktop,xfce4-web-browser.desktop,xfce-keyboard-settings.desktop
+recent=lightdm-gtk-greeter-settings.desktop,qterminal.desktop,xfce4-terminal-emulator.desktop,mate-calc.desktop,xfce4-run.desktop,blueman-manager.desktop,panel-preferences.desktop,vmware-workstation.desktop,xfce4-web-browser.desktop,xfce-keyboard-settings.desktop
 button-title=\ vwiss
 button-icon=/usr/local/share/vwicon/vwiss-all-gray-icon.png
 button-single-row=false
@@ -12,8 +12,8 @@ item-icon-size=2
 hover-switch-category=true
 category-show-name=true
 category-icon-size=1
-load-hierarchy=true
-view-as-icons=false
+sort-categories=false
+view-mode=2
 default-category=0
 recent-items-max=10
 favorites-in-recent=true

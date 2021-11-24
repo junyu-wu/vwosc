@@ -577,7 +577,7 @@ function transparent_toggle ()
 }
 
 zle -N transparent_toggle
-bindkey '^h' transparent_toggle
+bindkey '^r' transparent_toggle
 
 if [[ $IS_TRANSPARENT == "" ]] {
 	TRANSPARENT_STATUS=0 # 1 透明 0 不透明

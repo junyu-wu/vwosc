@@ -400,7 +400,7 @@ fi
 
 ## alias
 # proxy alias
-alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json &"
+alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json"
 alias px="proxychains4"
 alias prx="sudo service privoxy start"
 
@@ -457,6 +457,9 @@ alias wexe32cn="wine32exe_cn"
 
 alias wechat="wexe32 'im/wx' wechat >> /dev/null 2>&1"
 alias wechatcn="wexe32cn 'im/wx' wechat"
+
+# postman
+alias postman="/opt/Postman/Postman"
 
 # calibra
 alias calibre="/opt/calibre/calibre &"
