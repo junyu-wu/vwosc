@@ -28,6 +28,7 @@ deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
 # deb-src http://http.kali.org/kali kali-rolling main non-free contrib
 * depend
 sudo apt install build-essential gcc pkg-config autoconf automake cmake curl \
+linux-headers-`uname -r` \
 libgtk-3-dev libxpm-dev libjpeg-dev \
 libpng-dev libgif-dev libtiff-dev \
 gnutls-dev libtinfo-dev mailutils \
