@@ -1,19 +1,4 @@
-#+OPTIONS: reveal_title_slide:"<h2>%t</h2><h3>%s</h3><h6>%a</h6><h6>%d</h6>"
-#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil
-#+REVEAL_TRANS: slide
-#+REVEAL_THEME: league
-#+REVEAL_INIT_OPTIONS: slideNumber:true
-#+REVEAL_HLEVEL: 2
-#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
-#+LATEX_COMPILER: xelatex
-#+CATEGORY:[Default]
-#+TAGS:[Note]
-#+TITLE: os-init
-#+SUBTITLE:by WuJunyu
-#+AUTHOR:WuJunyu
-#+DATE:2021-11-22
-#+EMAIL:vistar_w@hotmail.com
-* init
+* kali source
 # 官方源
 # deb http://http.kali.org/kali kali-rolling main non-free contrib
 # deb-src http://http.kali.org/kali kali-rolling main non-free contrib
@@ -41,8 +26,8 @@ deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
 # 重庆大学
 # deb http://http.kali.org/kali kali-rolling main non-free contrib
 # deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-
-apt install build-essential gcc pkg-config autoconf automake cmake curl \
+* depend
+sudo apt install build-essential gcc pkg-config autoconf automake cmake curl \
 libgtk-3-dev libxpm-dev libjpeg-dev \
 libpng-dev libgif-dev libtiff-dev \
 gnutls-dev libtinfo-dev mailutils \
@@ -53,11 +38,14 @@ libevent-dev bison \
 libxaw7-dev \
 ibus ibus-rime \
 proxychains4 \
-xclip \
-ranger \
+xinput \
+python3-pip \
+xclip ffmpeg rdesktop \
+ranger caca-utils highlight atool w3m mediainfo catdoc docx2txt xlsx2csv poppler-utils \
 git \
-wine winetricks 
-
+wine winetricks
+* emacs
+mkdir -p /usr/local/emacs/27.2
 ./configure --prefix=/usr/local/emacs/27.2 \
 --with-modules --with-x-toolkit=gtk --with-xwidgets \
 --with-cairo --with-pdumper --with-mailutils \
