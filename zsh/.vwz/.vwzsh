@@ -608,7 +608,8 @@ function decompression_and_decrypt ()
 
 zle -N decompression_and_decrypt
 
-function open_command() {
+function open_command()
+{
   local open_cmd
 
   # define the open command
@@ -630,7 +631,8 @@ function open_command() {
 
 
 ## web search
-function web_search() {
+function web_search()
+{
   emulate -L zsh
 
   # define search engine URLS
