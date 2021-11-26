@@ -188,7 +188,7 @@ export GOPROXY=https://goproxy.io
 
 ## python
 # anaconda
-export CONDA_HOME=$PREFIX/anaconda
+export CONDA_HOME=$PREFIX/anaconda/3
 export PATH=$PATH:$CONDA_HOME/bin
 
 ## java
