@@ -56,4 +56,5 @@ mkdir -p /usr/local/emacs/27.2
 --with-zlib --with-threads --with-gconf \
 --with-gsettings --with-gpm --with-x \
 --with-xft --with-libotf --with-m17n-flt \
---with-lcms2 --with-nativecomp --with-no-titlebar
+--with-lcms2 --with-nativecomp --with-no-titlebar \
+-–with-xinput2
