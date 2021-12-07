@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=VWISS
+Description=vwiss plymouth theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/vwiss
+ScriptFile=/usr/share/plymouth/themes/vwiss/vwiss.script
