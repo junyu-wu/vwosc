@@ -235,6 +235,10 @@ export PATH=$PATH:$MONO_HOME/bin
 ## omnisharp
 # export OMNISHARP_HOME=$PREFIX/omnisharp
 
+## protobuf
+export PROTOBUF_HOME=$PREFIX/protobuf
+export PATH=$PATH:$PROTOBUF_HOME/bin
+
 
 ## tools config
 ## nmap
