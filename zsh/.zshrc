@@ -235,7 +235,7 @@ export PATH=$PATH:$MONO_HOME/bin
 ## redis
 export REDIS_HOME=$PREFIX/redis/redis-6.2.6
 if [ -d $REDIS_HOME ] ; then
-	export PATH=$PATH:$REDIS_HOME/src
+	export PATH=$PATH:$REDIS_HOME/bin
 fi
 
 ## omnisharp
