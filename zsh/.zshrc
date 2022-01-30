@@ -232,6 +232,12 @@ export PATH=$PATH:$DOTNET_HOME
 export MONO_HOME=$PREFIX/mono
 export PATH=$PATH:$MONO_HOME/bin
 
+## redis
+export REDIS_HOME=$PREFIX/redis/redis-6.2.6
+if [ -d $REDIS_HOME ] ; then
+	export PATH=$PATH:$REDIS_HOME/src
+fi
+
 ## omnisharp
 # export OMNISHARP_HOME=$PREFIX/omnisharp
 
