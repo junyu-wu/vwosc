@@ -220,8 +220,8 @@ export PATH=$PATH:$MAVEN_HOME/bin
 
 ## nodejs
 export NODE_HOME=$PREFIX/node
-export NPM_PATH=$NODE_HOME/npm
-export PATH=$PATH:$NODE_HOME/bin
+export NPM_PATH=$NODE_HOME/node_global/bin
+export PATH=$PATH:$NODE_HOME/bin:$NPM_PATH
 
 ## dotnet
 export DOTNET_HOME=$PREFIX/dotnet
