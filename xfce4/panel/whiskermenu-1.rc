@@ -1,5 +1,5 @@
-favorites=debian-xterm.desktop,mousepad.desktop,xfce4-file-manager.desktop,xfce4-web-browser.desktop,firefox-esr.desktop,google-chrome.desktop,kali-undercover.desktop,mate-calc.desktop,xfce4-screenshooter.desktop,vmware-workstation.desktop,xfce4-taskmanager.desktop
-recent=xfce4-taskmanager.desktop,qterminal.desktop,xfce4-screenshooter.desktop,lightdm-gtk-greeter-settings.desktop,xfce4-terminal-emulator.desktop,mate-calc.desktop,xfce4-run.desktop,blueman-manager.desktop,panel-preferences.desktop,xfce4-web-browser.desktop
+favorites=debian-xterm.desktop,mousepad.desktop,xfce4-file-manager.desktop,onboard.desktop,xfce4-web-browser.desktop,firefox-esr.desktop,google-chrome.desktop,kali-undercover.desktop,mate-calc.desktop,xfce4-screenshooter.desktop,vmware-workstation.desktop,xfce4-taskmanager.desktop
+recent=firefox-esr.desktop,mate-calc.desktop,google-chrome.desktop,xfce4-power-manager-settings.desktop,xfce4-taskmanager.desktop,qterminal.desktop,xfce4-screenshooter.desktop,lightdm-gtk-greeter-settings.desktop,xfce4-terminal-emulator.desktop,xfce4-run.desktop,blueman-manager.desktop,panel-preferences.desktop,xfce4-web-browser.desktop
 button-title=\ vwiss
 button-icon=/usr/local/share/vwicon/vwiss-all-gray-icon.png
 button-single-row=false
@@ -80,4 +80,3 @@ name=Open URI
 pattern=^(file|http|https):\\/\\/(.*)$
 command=exo-open \\0
 regex=true
-
