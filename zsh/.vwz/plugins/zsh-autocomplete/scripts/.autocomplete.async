@@ -100,6 +100,7 @@ builtin zle -N history-incremental-search-forward .autocomplete.async.history-in
     Y+=$REPLY
   done
   Y="${Y%$CPR[2]}"  # Discard the separator.
+  Y=${(M)Y%%<->}    # Keep trailing digits only (to work around input pollution).
 
   # Flush the rest.
   while [[ $REPLY != $CPR[3] ]]; do
@@ -209,7 +210,7 @@ builtin zle -N history-incremental-search-forward .autocomplete.async.history-in
   {
     local -F min_delay=
     builtin zstyle -s :autocomplete: min-delay min_delay ||
-        min_delay=0.01
+        min_delay=0.05
     zselect -t "$(( [#10] 100 * max( 0, min_delay - SECONDS ) ))"
 
     local -P hooks=( chpwd periodic precmd preexec zshaddhistory zshexit )
@@ -291,7 +292,7 @@ log_functions+=( .autocomplete.async.pty.zle-widget.inner )
 }
 
 .autocomplete.async.pty.completion-widget.inner() {
-  if .autocomplete.async.insufficient-input; then
+  if ! .autocomplete.async.sufficient-input; then
     typeset -gHi _autocomplete__list_lines=0
     return
   fi
@@ -299,6 +300,7 @@ log_functions+=( .autocomplete.async.pty.zle-widget.inner )
     typeset -gHi _autocomplete__list_lines=$_lastcomp[list_lines]
     return
   fi
+
   unset _autocomplete__mesg _autocomplete__comp_mesg
   {
     local curcontext=${curcontext:-list-choices:::}
@@ -376,21 +378,25 @@ log_functions+=( .autocomplete.async.pty.completion-widget.inner )
 } 2>>| $_autocomplete__log
 log_functions+=( .autocomplete.async.complete.fd-widget.inner )
 
-.autocomplete.async.insufficient-input() {
+.autocomplete.async.sufficient-input() {
+  # Don't check the input if we're not doing normal autocompletion.
+  [[ -n $curcontext ]] &&
+      return
+
   local min_input=
-  builtin zstyle -s :autocomplete:${curcontext:-list-choices} min-input min_input ||
+  builtin zstyle -s :autocomplete:list-choices min-input min_input ||
       min_input=0
   local ignored=
-  builtin zstyle -s :autocomplete:${curcontext:-list-choices} ignored-input ignored
+  builtin zstyle -s :autocomplete:list-choices ignored-input ignored
   if (( ${#words[@]} == 1 && ${#words[CURRENT]} < min_input )) ||
       [[ -n $words[CURRENT] && $words[CURRENT] == $~ignored ]]; then
     compstate[list]=
-    true
-  else
     false
+  else
+    true
   fi
 }
-# functions -T .autocomplete.async.insufficient-input
+# functions -T .autocomplete.async.sufficient-input
 
 .autocomplete.async.same-state() {
   [[ $_autocomplete__words == $words && $_autocomplete__current == $CURRENT ]]
@@ -404,8 +410,8 @@ log_functions+=( .autocomplete.async.complete.fd-widget.inner )
     return
   fi
 
-  .autocomplete.async.insufficient-input &&
-      return
+  .autocomplete.async.sufficient-input ||
+      return 2
 
   local -PF _seconds_=$1
   local -Pi _list_lines_=$2
@@ -460,7 +466,7 @@ log_functions+=( .autocomplete.async.list-choices.completion-widget )
       emulate -L zsh
       setopt $_autocomplete__func_opts[@]
       functions[compadd]=$functions[.autocomplete.async.compadd]
-      # functions -T compadd _describe
+      # functions -T compadd .autocomplete.compadd _describe
     } "$@"
     _main_complete "$@"
   } always {
@@ -470,8 +476,8 @@ log_functions+=( .autocomplete.async.list-choices.completion-widget )
 
 .autocomplete.async.compadd() {
   local -A _opts_=()
-  local -aU _dopt_=()
-  zparseopts -A _opts_ -E -- D: E: J: O: V: x: X: d:=_dopt_
+  local -a _dopt_=()
+  zparseopts -A _opts_ -E -- D: E: J: O: V: x: X: d:
 
   if [[ ( -v _opts_[-x] && $# == 2 ) ]]; then
     .autocomplete.compadd "$@"
@@ -517,8 +523,8 @@ log_functions+=( .autocomplete.async.list-choices.completion-widget )
         .autocomplete.compadd "$@"
         print -rNC1 -- "$compstate[list_lines]" "$compstate[nmatches]"
     )"}" )
-    (( _new_list_lines_ = max( 0, $_out_[1] - $compstate[list_lines] ) ))
-    (( _new_nmatches_ =   max( 0, $_out_[2] - $compstate[nmatches]   ) ))
+    _new_list_lines_=$(( max( 0, $_out_[1] - $compstate[list_lines] ) ))
+    _new_nmatches_=$((   max( 0, $_out_[2] - $compstate[nmatches]   ) ))
   fi
 
   if (( _new_list_lines_ <= _avail_list_lines_ )); then
@@ -544,12 +550,17 @@ log_functions+=( .autocomplete.async.list-choices.completion-widget )
   if [[ _nmatches_per_line_ -lt 1 && ! -v _opts_[-D] ]]; then
     # If we need more than one line per match, then make each match fit on one line.
     if [[ -z $_displ_array_ ]]; then
-      local -a displ=( ${(PA)_matches_array} )
+      local -a displ=( ${(PA)_matches_array_} )
       _dopt_=( -d displ )
       _displ_array_=displ
     fi
     _dopt_=( -l "$_dopt_[@]" )
-    set -A $_displ_array_ ${(r:COLUMNS-1:@)${(P@)_displ_array_}//$'\n'/\n}
+
+    # WORKAROUND: Display strings that are exactly $COLUMNS wide are mistakenly
+    # counted as spanning two lines, causing the dreaded
+    # `zsh: do you wish to see all XX possibilities (YY lines)?`
+    set -A $_displ_array_ ${(@r:COLUMNS-1:)${(PA)_displ_array_}[@]//$'\n'/\n}
+
     _nmatches_per_line_=1
   fi
 
@@ -577,6 +588,7 @@ log_functions+=( .autocomplete.async.list-choices.completion-widget )
   fi
 
   return _ret_
-}
+} 2>>| $_autocomplete__log
+log_functions+=( .autocomplete.async.compadd )
 
 typeset -gHa _autocomplete__log_functions=( $log_functions[@] )

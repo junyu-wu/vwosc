@@ -208,14 +208,50 @@ cd_parent() {
 
 # cd 命令历史记录切换
 cd_switch_history () {
-	print -- "$(dirs -v)"
-	echo
-	local to_dir=""
-	vared -p "to? " -c to_dir
-	local num=$(printf "%d" to_dir)
-    local to_cd=$(printf "-%d" $(printf "%d" $(($num + 0))))
-	cd $(print $to_cd)
-	echo
+	local page=0
+	local loop_p=1
+	local keys=("n" "p" "q")
+	local all_rows=$(dirs -v | wc -l)
+	local all_page=$(($all_rows / 10))
+
+	if [[ $((all_rows % 10)) > 1 ]] ; then
+		all_page=$(($all_page + 1))
+	fi
+
+
+	while (($loop_p))
+	do
+		local begin=$(($page * 10 + 1))
+		local end=$(($begin + 9))
+		print -- "$(dirs -v | sed -n $(printf "%d" begin),$(printf "%d" end)p)"
+
+		echo -e "\nselect (n(next)/p(previous)/q(quit)/[index]) : \c"
+		read key
+
+		if [[ $key == "n" ]] ; then
+			if [[ $page  < $all_page ]] ; then
+				page=$(($page + 1))
+				echo "\nnext ..."
+			else
+				echo "\ncurrent is latest page."
+			fi
+		elif [[ $key == "p" ]] ; then
+			if [[ $page > 0 ]] ; then
+				page=$(($page - 1))
+				echo "\nprevious ..."
+			else
+				echo "\ncurrent is first page."
+			fi
+
+		elif [[ $key == "q" ]] ; then
+			loop_p=0;
+		else
+			local to=$(printf "-%d" $(printf "%d" $(($key + 0))))
+			echo -e "to \c"
+			cd $(print $to)
+			loop_p=0;
+		fi
+	done
 }
 
 # 自动添加cd命令
