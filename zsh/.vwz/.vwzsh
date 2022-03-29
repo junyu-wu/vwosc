@@ -93,6 +93,8 @@ setopt COMPLETE_IN_WORD # 如果未设置，则如果开始完成，光标将设
 setopt COMPLETE_ALIASES # 防止命令行上的别名在尝试完成之前被内部替换。其效果是使别名成为完成目的的独特命令
 setopt GLOB_COMPLETE #
 setopt MENU_COMPLETE # 不列出可能性，直接插入第一项
+setopt correct # 拼写纠错
+setopt globdots # 模糊匹配
 
 zstyle ':completion:*' rehash true
 #开启此选项，补全时会直接选中菜单项
@@ -194,6 +196,22 @@ setopt extendedglob # 启用扩展通配
 setopt longlistjobs # 使用jobs时显示PID
 setopt nobeep # 不发出声音
 
+# 为每个目录建立历史记录
+cd () {
+	builtin cd "$@"
+	fc -W
+	local HISTDIR="$VWZCACHE/zshhistory$PWD"
+	if [ ! -d "$HISTDIR" ] ; then
+		mkdir -p "$HISTDIR"
+	fi
+	export HISTFILE="$HISTDIR/zhistory"
+	touch $HISTFILE
+	local ohistsize=$HISTSIZE
+	HISTSIZE=0
+	HISTSIZE=$ohistsize
+	fc -R
+}
+
 # 返回上个文件夹
 cd_undo () {
   popd      > /dev/null
@@ -270,7 +288,7 @@ zle -N cd_parent
 zle -N cd_switch_history
 zle -N auto_cd
 
-bindkey "\t" auto_cd
+bindkey "\t\t" auto_cd
 
 # 开启终端进入最后使用路径
 # DIRSTACKFILE="$VWZCACHE/zdirs"
@@ -289,24 +307,8 @@ bindkey "\t" auto_cd
 #   print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
 # }
 
-# 为每个目录建立历史记录
-cd () {
-	builtin cd "$@"
-	fc -W
-	local HISTDIR="$VWZCACHE/zshhistory$PWD"
-	if [ ! -d "$HISTDIR" ] ; then
-		mkdir -p "$HISTDIR"
-	fi
-	export HISTFILE="$HISTDIR/zhistory"
-	touch $HISTFILE
-	local ohistsize=$HISTSIZE
-	HISTSIZE=0
-	HISTSIZE=$ohistsize
-	fc -R
-}
-
-mkdir -p $VWZCACHE/.zshhistory$PWD
-export HISTFILE="$VWZCACHE/.zshhistory$PWD/zhistory"
+mkdir -p $VWZCACHE/zshhistory$PWD
+export HISTFILE="$VWZCACHE/zshhistory$PWD/zhistory"
 
 #*******************************************************************************
 #
@@ -398,11 +400,11 @@ function vwz_history-incremental-search-backward () {
 }
 
 zle -N history-incremental-search-backward vwz_history-incremental-search-backward
-bindkey '^R' history-incremental-search-backward
+# bindkey '^r' history-incremental-search-backward
 
 # 将历史记录汇总到一起
 function vwz_allhistory {
-	cat $(find $VWZCACHE/.zshhistory -name zhistory)
+	cat $(find $VWZCACHE/zshhistory -name zhistory)
 }
 
 # 历史记录格式化
@@ -410,7 +412,7 @@ function vwz_convhistory {
 	sort $1 | # 排序
 	uniq | # 合并相同
 	# sed 's/^:( [0-9]*):[0-9]*;(.*)/\1::\2/g' |
-	awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print }'
+	awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T " ,substr($1,2)) ">>"; print }'
 }
 
 # 查看全部历史记录
@@ -423,13 +425,73 @@ function hist {
 	vwz_convhistory $HISTFILE
 }
 
+# 历史命令查看，选择并执行
+function vwz_command_history () {
+	local page=0
+	local loop_p=1
+	local keys=("n" "p" "q")
+	local all_rows=$(histall | wc -l)
+	local all_page=$(($all_rows / 10))
+
+	if [[ $((all_rows % 10)) > 1 ]] ; then
+		all_page=$(($all_page + 1))
+	fi
+
+
+	while (($loop_p))
+	do
+		local begin=$(($page * 10 + 1))
+		local end=$(($begin + 9))
+		local result="$(histall | sort -r | awk -F'[>][>]' '{print $2}' | uniq | sed -n $(printf "%d" begin),$(printf "%d" end)p)"
+
+		print $result | nl -b t
+
+		echo -e "\nselect (n(next)/p(previous)/q(quit)/[index]) : \c"
+		read key
+
+		if [[ $key == "n" ]] ; then
+			if [[ $page  < $all_page ]] ; then
+				page=$(($page + 1))
+				echo "\nnext ..."
+			else
+				echo "\ncurrent is latest page."
+			fi
+		elif [[ $key == "p" ]] ; then
+			if [[ $page > 0 ]] ; then
+				page=$(($page - 1))
+				echo "\nprevious ..."
+			else
+				echo "\ncurrent is first page."
+			fi
+
+		elif [[ $key == "q" ]] ; then
+			loop_p=0;
+		else
+			if [[ $key -ge 1 && $key -le 10 ]] ; then
+				local selected=$(print $result | sed -n $(printf "%d" $key)p)
+				print -z $(print $selected | awk '$1=$1')
+			fi
+			loop_p=0;
+		fi
+	done
+}
+
+zle -N vwz_command_history
+
 # 根据单词出现频率查看全部历史记录 top20
 function top! {
+	local count=20
+
+	if [[ $1 != "" ]] ; then
+		count=$1
+	fi
+
 	vwz_allhistory |
-	awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) " |"; print $2}' |
-	sed 's/ /\n/g' |
-	sed '/^$/d' |
-	sort | uniq -c | sort -nr | head -n 20
+		awk -F'[;]' '{ $1=strftime("%Y-%m-%d %T" ,substr($1,2)) ">>"; print $2}' |
+		# sed 's/ /\n/g' |
+		# sed '/^$/d' |
+		sort | uniq -c | sort -nr | head -n $count | nl -ba
+		# sort -nr | uniq -c | head -n $count
 }
 
 #*******************************************************************************
@@ -613,7 +675,7 @@ function transparent_toggle ()
 }
 
 zle -N transparent_toggle
-bindkey '^r' transparent_toggle
+bindkey '^o' transparent_toggle
 
 if [[ $IS_TRANSPARENT == "" ]] {
 	TRANSPARENT_STATUS=0 # 1 透明 0 不透明
@@ -791,6 +853,7 @@ fi
 
 alias al="alias"
 alias ...='cd ..'
+alias h="vwz_command_history"
 alias d="cd_switch_history"
 alias u="cd -"
 alias p="cd .."
