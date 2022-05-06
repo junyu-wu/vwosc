@@ -25,7 +25,7 @@ export NAME=WuJunyu
 export EMAIL=vistar_w@hotmail.com
 
 ## emacs
-export EMACS_HOME=$PREFIX/emacs/27.2
+export EMACS_HOME=$PREFIX/emacs/28.1
 export PATH=$PATH:$EMACS_HOME/bin
 
 
@@ -170,8 +170,11 @@ export NASM_HOME=$PREFIX/nasm
 export PATH=$PATH:$NASM_HOME/bin
 
 ## ruby
+## rbenv
+export RBENV_HOME=$HOME/.rbenv
+export PATH=$PATH:$RBENV_HOME/bin
 ## rvm
-export RVM_HOME=$PREFIX/rvm
+export RVM_HOME=$HOME/.rvm
 export RVM_GEM_HOME=$RVM_HOME/gems
 [[  -s "$RVM_HOME/scripts/rvm" ]] && . "$RVM_HOME/scripts/rvm"
 export PATH=$PATH:$RVM_HOME/bin
@@ -465,7 +468,7 @@ alias wine32="winesetup"
 alias wexe32="wine32exe"
 alias wexe32cn="wine32exe_cn"
 
-alias wechat="wexe32 'im/wx' wechat >> /dev/null 2>&1"
+alias wechat="wexe32 'im' wechat >> /dev/null 2>&1"
 alias wechatcn="wexe32cn 'im/wx' wechat"
 
 # postman
@@ -475,3 +478,6 @@ alias postman="/opt/Postman/Postman"
 alias calibre="/opt/calibre/calibre &"
 
 # xi | sed 's/[⎜|↳|⎡|⎣]//g' | sed -n '/ikbc/Ip' | awk '{sub(/^[\t ]*/,"");print}'
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
