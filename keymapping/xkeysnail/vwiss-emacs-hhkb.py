@@ -45,7 +45,7 @@ define_timeout(1)
 
 # Keybindings for Firefox/Chrome
 define_keymap(
-    re.compile("Firefox|Google-chrome"),
+    re.compile("Firefox|Google-chrome|Chromium-browser"),
     {
         # Type C-j to focus to the content
         K("C-M-TAB"):
