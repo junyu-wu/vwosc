@@ -173,6 +173,9 @@ export PATH=$PATH:$NASM_HOME/bin
 ## rbenv
 export RBENV_HOME=$HOME/.rbenv
 export PATH=$PATH:$RBENV_HOME/bin
+if [ -d $RBENV_HOME ] ; then
+   eval "$(rbenv init - zsh)"
+fi
 ## rvm
 export RVM_HOME=$HOME/.rvm
 export RVM_GEM_HOME=$RVM_HOME/gems
@@ -185,8 +188,8 @@ export GOPATH=$HOME/workspace/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin:$GOBIN
 export GO111MODULE=on
-export GOPROXY=https://goproxy.io
-# export GOPROXY=https://goproxy.cn
+# export GOPROXY=https://goproxy.io
+export GOPROXY=https://goproxy.cn
 # export GOPROXY=mirrors.aliyun.com/goproxy
 
 ## python
@@ -222,7 +225,7 @@ export MAVEN_HOME=$PREFIX/maven/3.8.2
 export PATH=$PATH:$MAVEN_HOME/bin
 
 ## nodejs
-export NODE_HOME=$PREFIX/node
+export NODE_HOME=$PREFIX/node/v16.15.0
 export NPM_PATH=$NODE_HOME/node_global/bin
 export PATH=$PATH:$NODE_HOME/bin:$NPM_PATH
 
@@ -406,6 +409,12 @@ if [ -d $PREFIX/mu ]; then
 	export MU_HOME=$PREFIX/mu
 	export PATH=$PATH:$MU_HOME/bin
 	export MU_DIR=/home/workspace/mail
+fi
+
+## browser
+export CHROME_HOME=/opt/chrome-linux
+if [ -d $CHROME_HOME ]; then
+	export PATH=$PATH:$CHROME_HOME
 fi
 
 ## keybinds
