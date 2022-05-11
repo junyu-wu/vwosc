@@ -272,20 +272,41 @@ fi
 # start/stop/restart pgsql server
 function pgsql ()
 {
-	while getopts 'srqta:' OPT
+	pgsql_cmd_help ()
+	{
+		cat <<EOF
+pgsql - pgsql command
+
+Usage: pgsql [options]
+  pgsql -s | -q | -r | -a | -t | -h
+
+Options:
+  -h,                         Show this help message.
+  -s,                         Start postgresql server.
+  -q,                         Stop postgresql server.
+  -r,                         Restart postgresql server.
+  -t,                         Show postgresql server status.
+EOF
+	}
+
+	while getopts ':s:r:q:t:a:h' OPT
 	do
 		case $OPT in
+			h) pgsql_cmd_help; return 1;;
 			s) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data -l $POSTGRESQL_HOME/log/logfile'"
 			   echo "postgresql server started";;
 			q) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl stop -D $POSTGRESQL_HOME/data'"
 			   echo "postgresql server stoped";;
 			r) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
 			   echo "postgresql server restart";;
-			a) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $OPTARG'";;
+			# a) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $OPTARG'";;
 			t) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
 			   echo "postgresql server status";;
+			*) pgsql_cmd_help; return 1;;
 		esac
 	done
+
+	unset -f pgsql_cmd_help
 }
 
 ## nyxt
