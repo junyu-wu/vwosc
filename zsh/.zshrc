@@ -508,6 +508,3 @@ alias postman="/opt/Postman/Postman"
 alias calibre="/opt/calibre/calibre &"
 
 # xi | sed 's/[⎜|↳|⎡|⎣]//g' | sed -n '/ikbc/Ip' | awk '{sub(/^[\t ]*/,"");print}'
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
