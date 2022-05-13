@@ -923,7 +923,8 @@ PLUGINS=(zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highl
 		 zsh-autocomplete # https://github.com/marlonrichert/zsh-autocomplete.git
 		 zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions.git
 		 vwz-ranger
-		 vwrcm)
+		 vwrcm
+		 vwstartup)
 
 vwz_load_plugins
 

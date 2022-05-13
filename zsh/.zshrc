@@ -444,6 +444,7 @@ fi
 ## alias
 # proxy alias
 alias proxy="sudo $TROJAN_HOME/trojan $TROJAN_HOME/config.json"
+alias kproxy="sudo pkill trojan"
 alias px="proxychains4"
 alias prx="sudo service privoxy start"
 
@@ -489,6 +490,7 @@ alias xhk="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
 alias xhkl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py"
 alias xik="sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
 alias xikl="sudo xkeysnail --watch $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py"
+alias kxk="sudo pkill xkeysnail"
 
 # msf alias
 alias msftidy="ruby '$MSF_HOME/tools/dev/msftidy.rb'"
