@@ -27,8 +27,6 @@ normal_mode ()
 custom_mode ()
 {
 	echo -e "\n$(tput setaf 3)startup custom mode."
-
-	echo "custom path :" $VWSTARTUP_ROOT/custom.sh
 	source $VWSTARTUP_ROOT/custom.sh
 
 	return 0
@@ -37,7 +35,6 @@ custom_mode ()
 timeout_mode ()
 {
 	echo -en "\n$(tput bold)$(tput setaf 1)time out. "
-
 	normal_mode
 
 	return 0
@@ -46,6 +43,10 @@ timeout_mode ()
 vwstartup ()
 {
 	local sh_name="$(ps -p $$ --no-headers -o comm=)"
+
+	# if ! check_permission ; then
+	#     return 1
+	# fi
 
 	if [[ $sh_name == "zsh" ]]; then                                                                                         ###
 		# zsh or zsh plugins
@@ -68,10 +69,6 @@ vwstartup ()
         ###
 	    # bash or sh
 	    ###
-        # if ! check_permission ; then
-		#     return 1
-	    # fi
-
 	    if read -n 1 -t 3 -p "$(tput bold)$(tput setaf 2)select startup mode [n(normal)|c(custom)|*(normal)] ?$(tput civis)" tag
 	    then
 		    case $tag in
