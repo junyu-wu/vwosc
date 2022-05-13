@@ -483,6 +483,9 @@ alias xtc="xtermcontrol"
 # wmctrl
 alias ws="wm_switch_window"
 
+# vwstartup
+alias i="vwstartup"
+
 # xkeysanil alias
 alias xk="sudo xkeysnail --quiet $XKEYSNAIL_PATH/vwiss-emacs.py"
 alias xkl="sudo xkeysnail $XKEYSNAIL_PATH/vwiss-emacs.py"
