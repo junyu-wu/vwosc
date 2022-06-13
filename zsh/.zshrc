@@ -272,24 +272,25 @@ fi
 # start/stop/restart pgsql server
 function pgsql ()
 {
-	pgsql_cmd_help ()
+	function pgsql_cmd_help ()
 	{
 		cat <<EOF
 pgsql - pgsql command
 
 Usage: pgsql [options]
-  pgsql -s | -q | -r | -a | -t | -h
+pgsql -s | -q | -r | -a | -t | -h
 
-Options:
-  -h,                         Show this help message.
-  -s,                         Start postgresql server.
-  -q,                         Stop postgresql server.
-  -r,                         Restart postgresql server.
-  -t,                         Show postgresql server status.
+		Options:
+  		-h,                         Show this help message.
+  		-s,                         Start postgresql server.
+  		-q,                         Stop postgresql server.
+  		-r,                         Restart postgresql server.
+  		-t,                         Show postgresql server status.
 EOF
-	}
+		}
 
-	while getopts ':s:r:q:t:a:h' OPT
+
+	while getopts 'hsqrt' OPT
 	do
 		case $OPT in
 			h) pgsql_cmd_help; return 1;;
@@ -299,10 +300,10 @@ EOF
 			   echo "postgresql server stoped";;
 			r) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl start -D $POSTGRESQL_HOME/data'"
 			   echo "postgresql server restart";;
-			# a) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/psql $OPTARG'";;
 			t) eval "su $POSTGRESQL_USER_NAME -c '$POSTGRESQL_HOME/bin/pg_ctl status -D $POSTGRESQL_HOME/data'"
 			   echo "postgresql server status";;
-			*) pgsql_cmd_help; return 1;;
+			*) pgsql_cmd_help
+			   ; return 1;;
 		esac
 	done
 
@@ -315,7 +316,7 @@ export PATH=$PATH:$NYXT_HOME/bin
 
 ## metasploit-framework
 export MSF_HOME=$PREFIX/msf/metasploit-framework
-export MSF_GEM_HOME=$RVM_GEM_HOME/ruby-2.6.5@msf
+# export MSF_GEM_HOME=$RVM_GEM_HOME/ruby-2.6.5@msf
 
 if [ -d $MSF_HOME ] ; then
     PATH=$PATH:$MSF_HOME
@@ -512,4 +513,9 @@ alias postman="/opt/Postman/Postman"
 # calibra
 alias calibre="/opt/calibre/calibre &"
 
+# baidunetdisk
+alias bnd="/opt/baidunetdisk/baidunetdisk >> /dev/null 2>&1"
 # xi | sed 's/[⎜|↳|⎡|⎣]//g' | sed -n '/ikbc/Ip' | awk '{sub(/^[\t ]*/,"");print}'
+
+# sisco packettracer
+alias ciscopt="/opt/pt/packettracer"
