@@ -546,7 +546,23 @@ setopt CONTINUE_ON_ERROR
 # set local http & https proxy
 function setpx()
 {
-	while getopts 'a:r' OPT
+	function px_help ()
+	{
+		cat << EOF
+setpx - set shell http/https/socks5 proxy or remove proxy
+
+Usage: setpx [options] [<args>]
+  setpx -a <ip:prot>
+
+Options:
+  -h                Show this help message.
+  -a <ip:port>      Set http and https proxy.
+  -s <ip:port>      Set http and https socks5 proxy.
+  -r      Remove proxy.
+EOF
+	}
+
+	while getopts 'ha:s:r' OPT
 	do
 		case $OPT in
 			a) local path=$OPTARG
@@ -573,13 +589,48 @@ function setpx()
 				   export https_proxy=$http_proxy
 
 				   echo "set http and https proxy is 127.0.0.1:$2";
-			   fi;;
+			   fi
+			   return 0
+			   ;;
+			s) local path=$OPTARG
+			   if [[ $path =~ ":" ]]
+			   then
+				   local host=${path%:*}
+				   local post=${path##*:}
+
+				   if [[ $host =~ "." ]]
+				   then
+					   echo "host is localhost, post is " $post
+				   else
+					   host="172.0.0.1"
+				   fi
+
+				   export http_proxy="socks5://$host:$post"
+				   export https_proxy="socks5://$http_proxy"
+
+				   echo "set http and https proxy is socks5://$host:$post";
+			   else
+				   local post=${path##*:}
+
+				   export http_proxy=127.0.0.1:$post
+				   export https_proxy=$http_proxy
+
+				   echo "set http and https proxy is 127.0.0.1:$2";
+			   fi
+			   return 0
+			   ;;
 			r) unset http_proxy
 			   unset https_proxy
-			   echo "unset http and https proxy";;
-			*) return 1;;
+			   echo "unset http and https proxy"
+			   return 0
+			   ;;
+			*)
+			   ;;
 		esac
 	done
+
+	px_help
+	unset -f px_help
 }
 
 zle -N slhp
