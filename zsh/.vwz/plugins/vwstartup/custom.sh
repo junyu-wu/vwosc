@@ -6,6 +6,7 @@ echo -en "custom script running...\n"
 nohup sudo xkeysnail --watch --quiet /home/vwx/.config/xkeysnail/vwiss-emacs-hhkb.py >> /dev/null 2>&1 &
 nohup sudo /usr/local/trojan/trojan /usr/local/trojan/config.json >> /dev/null 2>&1 &
 
-tmux new-window && nohup emacs &
+nohup emacs &
+tmux new-window
 
 alias vwks="sudo pkill trojan && sudo pkill xkeysnail"

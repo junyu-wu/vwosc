@@ -218,7 +218,7 @@ fi
 
 ## lua
 export LUA_HOME=$PREFIX/lua
-export PATH=$PATH:$LUA_HOME/bin
+export PATH=$PATH:$LUA_HOME/lua-5.4.4/src
 
 ## maven
 export MAVEN_HOME=$PREFIX/maven/3.8.2
