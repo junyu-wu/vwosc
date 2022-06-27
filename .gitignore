@@ -1,6 +1,7 @@
 # 忽略缓存或临时文件
 
 vw-notes.txt
+vw-notes.txt.gpg
 
 trojan/config.json.now
 trojan/config.json.txt
