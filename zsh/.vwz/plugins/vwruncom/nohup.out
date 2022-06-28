@@ -1,0 +1,312 @@
+
+██╗  ██╗██╗  ██╗███████╗██╗   ██╗
+╚██╗██╔╝██║ ██╔╝██╔════╝╚██╗ ██╔╝
+ ╚███╔╝ █████╔╝ █████╗   ╚████╔╝
+ ██╔██╗ ██╔═██╗ ██╔══╝    ╚██╔╝
+██╔╝ ██╗██║  ██╗███████╗   ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝
+  ███████╗███╗   ██╗ █████╗ ██╗██╗
+  ██╔════╝████╗  ██║██╔══██╗██║██║
+  ███████╗██╔██╗ ██║███████║██║██║
+  ╚════██║██║╚██╗██║██╔══██║██║██║
+  ███████║██║ ╚████║██║  ██║██║███████╗
+  ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚══════╝
+                             v0.4.0
+
+No keyboard devices specified via (--devices) option.
+xkeysnail picks up keyboard-ish devices from the list below:
+
+--------------------------------------------------------------------------------------------
+Device               Name                                Phys
+--------------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event1    Sleep Button                        PNP0C0E/button/input0
+/dev/input/event2    Lid Switch                          PNP0C0D/button/input0
+/dev/input/event3    Power Button                        PNP0C0C/button/input0
+/dev/input/event4    Video Bus                           LNXVIDEO/video/input0
+/dev/input/event7    Wacom HID 5276 Pen                  i2c-WACF2200:00
+/dev/input/event8    Wacom HID 5276 Finger               i2c-WACF2200:00
+/dev/input/event9    TPPS/2 Elan TrackPoint              isa0060/serio1/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+/dev/input/event11   Lenovo TP Precision Evo 2.4G Mouse  usb-0000:00:14.0-7/input0
+/dev/input/event12   Lenovo TP Precision Evo 2.4G        usb-0000:00:14.0-7/input0
+/dev/input/event13   Lenovo TP Precision Evo 2.4G Consumer Control usb-0000:00:14.0-7/input0
+/dev/input/event14   Lenovo TP Precision Evo 2.4G System Control usb-0000:00:14.0-7/input0
+/dev/input/event15   Intel HID events
+/dev/input/event16   ThinkPad Extra Buttons              thinkpad_acpi/input0
+/dev/input/event5    SYNA8008:00 06CB:CE58 Mouse         i2c-SYNA8008:00
+/dev/input/event6    SYNA8008:00 06CB:CE58 Touchpad      i2c-SYNA8008:00
+/dev/input/event17   PC Speaker                          isa0061/input0
+/dev/input/event18   Integrated Camera: Integrated C     usb-0000:00:14.0-4/button
+/dev/input/event19   Integrated Camera: Integrated I     usb-0000:00:14.0-4/button
+/dev/input/event20   sof-hda-dsp Mic                     ALSA
+/dev/input/event21   sof-hda-dsp Headphone               ALSA
+/dev/input/event22   sof-hda-dsp HDMI/DP,pcm=3           ALSA
+/dev/input/event23   sof-hda-dsp HDMI/DP,pcm=4           ALSA
+/dev/input/event24   sof-hda-dsp HDMI/DP,pcm=5           ALSA
+/dev/input/event25   py-evdev-uinput                     py-evdev-uinput
+
+Okay, now enable remapping on the following device(s):
+
+------------------------------------------------------------------------------------
+Device               Name                                Phys
+------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+
+Watching keyboard devices plug in
+No key event will be output since quiet option was specified.
+Received an interrupt, exiting.
+Welcome to trojan 1.15.1
+[2022-05-12 23:34:02] [WARN] trojan service (client) started at 127.0.0.1:1080
+[2022-05-12 23:34:04] [WARN] got signal: 2
+[2022-05-12 23:34:04] [WARN] trojan service stopped
+
+██╗  ██╗██╗  ██╗███████╗██╗   ██╗
+╚██╗██╔╝██║ ██╔╝██╔════╝╚██╗ ██╔╝
+ ╚███╔╝ █████╔╝ █████╗   ╚████╔╝
+ ██╔██╗ ██╔═██╗ ██╔══╝    ╚██╔╝
+██╔╝ ██╗██║  ██╗███████╗   ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝
+  ███████╗███╗   ██╗ █████╗ ██╗██╗
+  ██╔════╝████╗  ██║██╔══██╗██║██║
+  ███████╗██╔██╗ ██║███████║██║██║
+  ╚════██║██║╚██╗██║██╔══██║██║██║
+  ███████║██║ ╚████║██║  ██║██║███████╗
+  ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚══════╝
+                             v0.4.0
+
+No keyboard devices specified via (--devices) option.
+xkeysnail picks up keyboard-ish devices from the list below:
+
+--------------------------------------------------------------------------------------------
+Device               Name                                Phys
+--------------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event1    Sleep Button                        PNP0C0E/button/input0
+/dev/input/event2    Lid Switch                          PNP0C0D/button/input0
+/dev/input/event3    Power Button                        PNP0C0C/button/input0
+/dev/input/event4    Video Bus                           LNXVIDEO/video/input0
+/dev/input/event7    Wacom HID 5276 Pen                  i2c-WACF2200:00
+/dev/input/event8    Wacom HID 5276 Finger               i2c-WACF2200:00
+/dev/input/event9    TPPS/2 Elan TrackPoint              isa0060/serio1/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+/dev/input/event11   Lenovo TP Precision Evo 2.4G Mouse  usb-0000:00:14.0-7/input0
+/dev/input/event12   Lenovo TP Precision Evo 2.4G        usb-0000:00:14.0-7/input0
+/dev/input/event13   Lenovo TP Precision Evo 2.4G Consumer Control usb-0000:00:14.0-7/input0
+/dev/input/event14   Lenovo TP Precision Evo 2.4G System Control usb-0000:00:14.0-7/input0
+/dev/input/event15   Intel HID events
+/dev/input/event16   ThinkPad Extra Buttons              thinkpad_acpi/input0
+/dev/input/event5    SYNA8008:00 06CB:CE58 Mouse         i2c-SYNA8008:00
+/dev/input/event6    SYNA8008:00 06CB:CE58 Touchpad      i2c-SYNA8008:00
+/dev/input/event17   PC Speaker                          isa0061/input0
+/dev/input/event18   Integrated Camera: Integrated C     usb-0000:00:14.0-4/button
+/dev/input/event19   Integrated Camera: Integrated I     usb-0000:00:14.0-4/button
+/dev/input/event20   sof-hda-dsp Mic                     ALSA
+/dev/input/event21   sof-hda-dsp Headphone               ALSA
+/dev/input/event22   sof-hda-dsp HDMI/DP,pcm=3           ALSA
+/dev/input/event23   sof-hda-dsp HDMI/DP,pcm=4           ALSA
+/dev/input/event24   sof-hda-dsp HDMI/DP,pcm=5           ALSA
+/dev/input/event25   py-evdev-uinput                     py-evdev-uinput
+
+Okay, now enable remapping on the following device(s):
+
+------------------------------------------------------------------------------------
+Device               Name                                Phys
+------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+
+Watching keyboard devices plug in
+No key event will be output since quiet option was specified.
+Received an interrupt, exiting.
+Welcome to trojan 1.15.1
+[2022-05-12 23:34:05] [WARN] trojan service (client) started at 127.0.0.1:1080
+[2022-05-12 23:34:08] [WARN] got signal: 2
+[2022-05-12 23:34:08] [WARN] trojan service stopped
+
+██╗  ██╗██╗  ██╗███████╗██╗   ██╗
+╚██╗██╔╝██║ ██╔╝██╔════╝╚██╗ ██╔╝
+ ╚███╔╝ █████╔╝ █████╗   ╚████╔╝
+ ██╔██╗ ██╔═██╗ ██╔══╝    ╚██╔╝
+██╔╝ ██╗██║  ██╗███████╗   ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝
+  ███████╗███╗   ██╗ █████╗ ██╗██╗
+  ██╔════╝████╗  ██║██╔══██╗██║██║
+  ███████╗██╔██╗ ██║███████║██║██║
+  ╚════██║██║╚██╗██║██╔══██║██║██║
+  ███████║██║ ╚████║██║  ██║██║███████╗
+  ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚══════╝
+                             v0.4.0
+
+No keyboard devices specified via (--devices) option.
+xkeysnail picks up keyboard-ish devices from the list below:
+
+--------------------------------------------------------------------------------------------
+Device               Name                                Phys
+--------------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event1    Sleep Button                        PNP0C0E/button/input0
+/dev/input/event2    Lid Switch                          PNP0C0D/button/input0
+/dev/input/event3    Power Button                        PNP0C0C/button/input0
+/dev/input/event4    Video Bus                           LNXVIDEO/video/input0
+/dev/input/event7    Wacom HID 5276 Pen                  i2c-WACF2200:00
+/dev/input/event8    Wacom HID 5276 Finger               i2c-WACF2200:00
+/dev/input/event9    TPPS/2 Elan TrackPoint              isa0060/serio1/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+/dev/input/event11   Lenovo TP Precision Evo 2.4G Mouse  usb-0000:00:14.0-7/input0
+/dev/input/event12   Lenovo TP Precision Evo 2.4G        usb-0000:00:14.0-7/input0
+/dev/input/event13   Lenovo TP Precision Evo 2.4G Consumer Control usb-0000:00:14.0-7/input0
+/dev/input/event14   Lenovo TP Precision Evo 2.4G System Control usb-0000:00:14.0-7/input0
+/dev/input/event15   Intel HID events
+/dev/input/event16   ThinkPad Extra Buttons              thinkpad_acpi/input0
+/dev/input/event5    SYNA8008:00 06CB:CE58 Mouse         i2c-SYNA8008:00
+/dev/input/event6    SYNA8008:00 06CB:CE58 Touchpad      i2c-SYNA8008:00
+/dev/input/event17   PC Speaker                          isa0061/input0
+/dev/input/event18   Integrated Camera: Integrated C     usb-0000:00:14.0-4/button
+/dev/input/event19   Integrated Camera: Integrated I     usb-0000:00:14.0-4/button
+/dev/input/event20   sof-hda-dsp Mic                     ALSA
+/dev/input/event21   sof-hda-dsp Headphone               ALSA
+/dev/input/event22   sof-hda-dsp HDMI/DP,pcm=3           ALSA
+/dev/input/event23   sof-hda-dsp HDMI/DP,pcm=4           ALSA
+/dev/input/event24   sof-hda-dsp HDMI/DP,pcm=5           ALSA
+/dev/input/event25   py-evdev-uinput                     py-evdev-uinput
+
+Okay, now enable remapping on the following device(s):
+
+------------------------------------------------------------------------------------
+Device               Name                                Phys
+------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+
+Watching keyboard devices plug in
+No key event will be output since quiet option was specified.
+Received an interrupt, exiting.
+
+██╗  ██╗██╗  ██╗███████╗██╗   ██╗
+╚██╗██╔╝██║ ██╔╝██╔════╝╚██╗ ██╔╝
+ ╚███╔╝ █████╔╝ █████╗   ╚████╔╝
+ ██╔██╗ ██╔═██╗ ██╔══╝    ╚██╔╝
+██╔╝ ██╗██║  ██╗███████╗   ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝
+  ███████╗███╗   ██╗ █████╗ ██╗██╗
+  ██╔════╝████╗  ██║██╔══██╗██║██║
+  ███████╗██╔██╗ ██║███████║██║██║
+  ╚════██║██║╚██╗██║██╔══██║██║██║
+  ███████║██║ ╚████║██║  ██║██║███████╗
+  ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚══════╝
+                             v0.4.0
+
+No keyboard devices specified via (--devices) option.
+xkeysnail picks up keyboard-ish devices from the list below:
+
+--------------------------------------------------------------------------------------------
+Device               Name                                Phys
+--------------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event1    Sleep Button                        PNP0C0E/button/input0
+/dev/input/event2    Lid Switch                          PNP0C0D/button/input0
+/dev/input/event3    Power Button                        PNP0C0C/button/input0
+/dev/input/event4    Video Bus                           LNXVIDEO/video/input0
+/dev/input/event7    Wacom HID 5276 Pen                  i2c-WACF2200:00
+/dev/input/event8    Wacom HID 5276 Finger               i2c-WACF2200:00
+/dev/input/event9    TPPS/2 Elan TrackPoint              isa0060/serio1/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+/dev/input/event11   Lenovo TP Precision Evo 2.4G Mouse  usb-0000:00:14.0-7/input0
+/dev/input/event12   Lenovo TP Precision Evo 2.4G        usb-0000:00:14.0-7/input0
+/dev/input/event13   Lenovo TP Precision Evo 2.4G Consumer Control usb-0000:00:14.0-7/input0
+/dev/input/event14   Lenovo TP Precision Evo 2.4G System Control usb-0000:00:14.0-7/input0
+/dev/input/event15   Intel HID events
+/dev/input/event16   ThinkPad Extra Buttons              thinkpad_acpi/input0
+/dev/input/event5    SYNA8008:00 06CB:CE58 Mouse         i2c-SYNA8008:00
+/dev/input/event6    SYNA8008:00 06CB:CE58 Touchpad      i2c-SYNA8008:00
+/dev/input/event17   PC Speaker                          isa0061/input0
+/dev/input/event18   Integrated Camera: Integrated C     usb-0000:00:14.0-4/button
+/dev/input/event19   Integrated Camera: Integrated I     usb-0000:00:14.0-4/button
+/dev/input/event20   sof-hda-dsp Mic                     ALSA
+/dev/input/event21   sof-hda-dsp Headphone               ALSA
+/dev/input/event22   sof-hda-dsp HDMI/DP,pcm=3           ALSA
+/dev/input/event23   sof-hda-dsp HDMI/DP,pcm=4           ALSA
+/dev/input/event24   sof-hda-dsp HDMI/DP,pcm=5           ALSA
+/dev/input/event25   py-evdev-uinput                     py-evdev-uinput
+
+Okay, now enable remapping on the following device(s):
+
+------------------------------------------------------------------------------------
+Device               Name                                Phys
+------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+
+Watching keyboard devices plug in
+No key event will be output since quiet option was specified.
+Received an interrupt, exiting.
+
+██╗  ██╗██╗  ██╗███████╗██╗   ██╗
+╚██╗██╔╝██║ ██╔╝██╔════╝╚██╗ ██╔╝
+ ╚███╔╝ █████╔╝ █████╗   ╚████╔╝
+ ██╔██╗ ██╔═██╗ ██╔══╝    ╚██╔╝
+██╔╝ ██╗██║  ██╗███████╗   ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝
+  ███████╗███╗   ██╗ █████╗ ██╗██╗
+  ██╔════╝████╗  ██║██╔══██╗██║██║
+  ███████╗██╔██╗ ██║███████║██║██║
+  ╚════██║██║╚██╗██║██╔══██║██║██║
+  ███████║██║ ╚████║██║  ██║██║███████╗
+  ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚══════╝
+                             v0.4.0
+
+No keyboard devices specified via (--devices) option.
+xkeysnail picks up keyboard-ish devices from the list below:
+
+--------------------------------------------------------------------------------------------
+Device               Name                                Phys
+--------------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event1    Sleep Button                        PNP0C0E/button/input0
+/dev/input/event2    Lid Switch                          PNP0C0D/button/input0
+/dev/input/event3    Power Button                        PNP0C0C/button/input0
+/dev/input/event4    Video Bus                           LNXVIDEO/video/input0
+/dev/input/event7    Wacom HID 5276 Pen                  i2c-WACF2200:00
+/dev/input/event8    Wacom HID 5276 Finger               i2c-WACF2200:00
+/dev/input/event9    TPPS/2 Elan TrackPoint              isa0060/serio1/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+/dev/input/event11   Lenovo TP Precision Evo 2.4G Mouse  usb-0000:00:14.0-7/input0
+/dev/input/event12   Lenovo TP Precision Evo 2.4G        usb-0000:00:14.0-7/input0
+/dev/input/event13   Lenovo TP Precision Evo 2.4G Consumer Control usb-0000:00:14.0-7/input0
+/dev/input/event14   Lenovo TP Precision Evo 2.4G System Control usb-0000:00:14.0-7/input0
+/dev/input/event15   Intel HID events
+/dev/input/event16   ThinkPad Extra Buttons              thinkpad_acpi/input0
+/dev/input/event5    SYNA8008:00 06CB:CE58 Mouse         i2c-SYNA8008:00
+/dev/input/event6    SYNA8008:00 06CB:CE58 Touchpad      i2c-SYNA8008:00
+/dev/input/event17   PC Speaker                          isa0061/input0
+/dev/input/event18   Integrated Camera: Integrated C     usb-0000:00:14.0-4/button
+/dev/input/event19   Integrated Camera: Integrated I     usb-0000:00:14.0-4/button
+/dev/input/event20   sof-hda-dsp Mic                     ALSA
+/dev/input/event21   sof-hda-dsp Headphone               ALSA
+/dev/input/event22   sof-hda-dsp HDMI/DP,pcm=3           ALSA
+/dev/input/event23   sof-hda-dsp HDMI/DP,pcm=4           ALSA
+/dev/input/event24   sof-hda-dsp HDMI/DP,pcm=5           ALSA
+/dev/input/event25   py-evdev-uinput                     py-evdev-uinput
+
+Okay, now enable remapping on the following device(s):
+
+------------------------------------------------------------------------------------
+Device               Name                                Phys
+------------------------------------------------------------------------------------
+/dev/input/event0    AT Translated Set 2 keyboard        isa0060/serio0/input0
+/dev/input/event10   Topre Corporation HHKB Professional usb-0000:00:14.0-1.1/input0
+
+Watching keyboard devices plug in
+No key event will be output since quiet option was specified.
+Received an interrupt, exiting.
+Welcome to trojan 1.15.1
+[2022-05-13 00:01:29] [WARN] trojan service (client) started at 127.0.0.1:1080
+[2022-05-13 00:01:40] [INFO] 127.0.0.1:59764 requested connection to www.google.com:443
+[2022-05-13 00:01:40] [INFO] 127.0.0.1:59766 requested connection to www.gstatic.com:443
+[2022-05-13 00:01:43] [INFO] 127.0.0.1:59768 requested connection to play.google.com:443
+[2022-05-13 00:01:44] [INFO] 127.0.0.1:59770 requested connection to play.google.com:443
+[2022-05-13 00:01:44] [INFO] 127.0.0.1:59772 requested connection to adservice.google.com:443
+[2022-05-13 00:01:57] [WARN] got signal: 15
+[2022-05-13 00:01:57] [WARN] trojan service stopped

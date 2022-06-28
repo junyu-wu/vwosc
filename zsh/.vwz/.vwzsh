@@ -863,6 +863,13 @@ if [[ ${#ZSH_WEB_SEARCH_ENGINES} -gt 0 ]]; then
   unset engines key
 fi
 
+function find_proc_by_name ()
+{
+	ps -ef| grep $1 | grep -v grep
+}
+
+zle -N find_proc_by_name
+
 #*******************************************************************************
 #
 # bindkye
@@ -912,12 +919,12 @@ alias l="ls -lah"
 alias ll="ls -lh"
 alias s="du --max-depth=1 -h"
 alias f="df -h"
-alias rc="source $HOME/.zshrc"
+alias rcl="source $HOME/.zshrc"
 alias rp="vwz_load_plugins"
 alias tx="transset -t -x"
 alias k="kill -9"
 alias pk="pkill -n"
-alias pg="ps -ef|grep"
+alias pg="find_proc_by_name"
 alias g="grep"
 alias af="al|g"
 
@@ -975,7 +982,7 @@ PLUGINS=(zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highl
 		 zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions.git
 		 vwz-ranger
 		 vwrcm
-		 vwstartup)
+		 vwruncom)
 
 vwz_load_plugins
 

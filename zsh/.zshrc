@@ -41,7 +41,7 @@ if [[ -n $SSH_CONNECTION ]]; then
 fi
 
 ## xterm
-export XTERM_HOME=$PREFIX/xterm
+export XTERM_HOME=$PREFIX/xterm/xterm-372
 export XTERMCONTROL_HOME=$XTERM_HOME/share/xtermcontrol
 export PATH=$PATH:$XTERM_HOME/bin:$XTERMCONTROL_HOME/bin
 
@@ -483,9 +483,6 @@ alias xtc="xtermcontrol"
 
 # wmctrl
 alias ws="wm_switch_window"
-
-# vwstartup
-alias i="vwstartup"
 
 # xkeysanil alias
 alias xk="sudo xkeysnail --quiet $XKEYSNAIL_PATH/vwiss-emacs.py"
