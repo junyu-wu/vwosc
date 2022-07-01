@@ -6,11 +6,11 @@ echo -en "custom script running...\n"
 
 customize_run ()
 {
-	if [ -n "$(xinput | grep hhkb)" ]
+	if [ -n "$(xinput | grep -i hhkb)" ]
 	then
 		echo -en "run hhkb keyboard maping"
 		nohup sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-hhkb.py >> /dev/null 2>&1 &
-	elif [ -n "$(xinput | grep ikbc)" ]
+	elif [ -n "$(xinput | grep -i ikbc)" ]
 	then
 		echo -en "run ickb keyboard maping"
 		nohup sudo xkeysnail --watch --quiet $XKEYSNAIL_PATH/vwiss-emacs-ikbc.py >> /dev/null 2>&1 &
