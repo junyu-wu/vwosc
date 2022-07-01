@@ -522,9 +522,6 @@ function vwz_set_env_path ()
 {
 	local home_suffix="_HOME"
 	local envs=("$@")
-	local envhomes=$2
-	echo ${envs[@]}
-	echo $envhome
 	# shift
 	typeset -u env_name
 
