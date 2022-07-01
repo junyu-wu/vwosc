@@ -26,7 +26,7 @@ source $VWZ/.vwzsh
 #                #
 ##################
 ## name and email
-export NAME=WuJunyu
+export NAME=ys
 export EMAIL=vistar_w@hotmail.com
 
 ################
