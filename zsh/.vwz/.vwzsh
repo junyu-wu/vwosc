@@ -863,6 +863,42 @@ function open_command()
   ${=open_cmd} "$@" &>/dev/null
 }
 
+function pactl_toggle () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
+		pactl set-sink-mute @DEFAULT_SINK@ toggle
+	else
+		echo "please install pactl"
+	fi
+}
+
+function pactl_increase () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
+		if [[ "$1" == "" ]]
+		then
+			pactl set-sink-volume @DEFAULT_SINK@ +5%
+		else
+			pactl set-sink-volume @DEFAULT_SINK@ +"$1"%
+		fi
+	else
+		echo "please install pactl"
+	fi
+}
+
+function pactl_decrease () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
+		if [[ "$1" == "" ]]
+		then
+			pactl set-sink-volume @DEFAULT_SINK@ -5%
+		else
+			pactl set-sink-volume @DEFAULT_SINK@ -"$1"%
+		fi
+	else
+		echo "please install pactl"
+	fi
+}
 
 ## web search
 function web_search()
@@ -1094,6 +1130,10 @@ alias tt="tmux a -t"
 alias tk="tmux kill-session -t"
 alias ts="tmux switch-client -t"
 alias tu="unse TMUX"
+
+alias pat="pactl_toggle"
+alias pain="pactl_increase"
+alias pade="pactl_decrease"
 
 alias gi="git init"
 alias ga="git add ."
