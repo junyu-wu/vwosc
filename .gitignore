@@ -8,6 +8,7 @@ trojan/config.json.txt
 trojan/gui-config.json
 
 emacs/*
+browser/bookmarks*
 zsh/startup
 sec/*
 ssh/*
