@@ -863,7 +863,7 @@ function open_command()
   ${=open_cmd} "$@" &>/dev/null
 }
 
-function pactl_toggle () {
+function pactl_sink_toggle () {
 	if hash pactl 2>/dev/null; then
 		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
 		pactl set-sink-mute @DEFAULT_SINK@ toggle
@@ -872,7 +872,16 @@ function pactl_toggle () {
 	fi
 }
 
-function pactl_increase () {
+function pactl_source_toggle () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SOURCE=$(pactl info | grep "Default Source" | cut -d " " -f3)
+		pactl set-source-mute @DEFAULT_SOURCE@ toggle
+	else
+		echo "please install pactl"
+	fi
+}
+
+function pactl_sink_increase () {
 	if hash pactl 2>/dev/null; then
 		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
 		if [[ "$1" == "" ]]
@@ -886,7 +895,21 @@ function pactl_increase () {
 	fi
 }
 
-function pactl_decrease () {
+function pactl_source_increase () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SOURCE=$(pactl info | grep "Default Source" | cut -d " " -f3)
+		if [[ "$1" == "" ]]
+		then
+			pactl set-source-volume @DEFAULT_SOURCE@ +5%
+		else
+			pactl set-source-volume @DEFAULT_SOURCE@ +"$1"%
+		fi
+	else
+		echo "please install pactl"
+	fi
+}
+
+function pactl_sink_decrease () {
 	if hash pactl 2>/dev/null; then
 		local DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
 		if [[ "$1" == "" ]]
@@ -894,6 +917,20 @@ function pactl_decrease () {
 			pactl set-sink-volume @DEFAULT_SINK@ -5%
 		else
 			pactl set-sink-volume @DEFAULT_SINK@ -"$1"%
+		fi
+	else
+		echo "please install pactl"
+	fi
+}
+
+function pactl_source_decrease () {
+	if hash pactl 2>/dev/null; then
+		local DEFAULT_SOURCE=$(pactl info | grep "Default Source" | cut -d " " -f3)
+		if [[ "$1" == "" ]]
+		then
+			pactl set-source-volume @DEFAULT_SOURCE@ -5%
+		else
+			pactl set-source-volume @DEFAULT_SOURCE@ -"$1"%
 		fi
 	else
 		echo "please install pactl"
@@ -1131,9 +1168,12 @@ alias tk="tmux kill-session -t"
 alias ts="tmux switch-client -t"
 alias tu="unse TMUX"
 
-alias pat="pactl_toggle"
-alias pain="pactl_increase"
-alias pade="pactl_decrease"
+alias pas="pactl_sink_toggle"
+alias pasin="pactl_sink_increase"
+alias pasde="pactl_sink_decrease"
+alias pam="pactl_source_toggle"
+alias pamin="pactl_source_increase"
+alias pamde="pactl_source_decrease"
 
 alias gi="git init"
 alias ga="git add ."
