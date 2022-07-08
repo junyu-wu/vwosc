@@ -1144,6 +1144,8 @@ alias pk="pkill -n"
 alias pg="find_proc_by_name"
 alias g="grep"
 alias af="al|g"
+alias t="date '+%Y%n%A %b %d %n%H:%M:%S%n%Z%n%s'"
+alias t="date '+Zone      : %Z %z%nYear      : %Y%nMoth&Day  : %b(%m) %d%nWeek      : %A(%w) [Total(%W)]%nTime      : %H:%M:%S%nTimestamp : %s'"
 
 alias lo="xfce4-session-logout -l"
 alias rb="sudo reboot"
