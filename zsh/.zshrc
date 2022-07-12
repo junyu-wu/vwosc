@@ -68,9 +68,10 @@ env_envs=(emacs:$PREFIX/emacs/28.1:bin \
 			  wmctrl:$PREFIX/wmctrl:bin \
 			  nasm:$PREFIX/nasm:bin \
 			  rbenv:$HOME/.rbenv:bin \
+			  pyenv:$HOME/.pyenv:bin \
 			  conda:$PREFIX/anaconda/3:bin \
 			  rustup:$HOME/.cargo:bin \
-			  lua:$PREFIX/lua:src \
+			  lua:$PREFIX/lua/lua-5.4.4:src \
 			  maven:$PREFIX/maven/3.8.2:bin \
 			  node:$PREFIX/node/v16.15.0:bin \
 			  npm:$NODE_HOME/node_global:bin \
@@ -115,8 +116,16 @@ fi
 ##################
 ## ruby
 ## rbenv
-if [ -d $RBENV_HOME ] ; then
+if [ -n "$RBENV_HOME" -a -d $RBENV_HOME ]
+then
    eval "$(rbenv init - zsh)"
+fi
+
+## python
+## pyenv
+if [ -n "$PYENV_HOME" -a -d $PYENV_HOME ]
+then
+	eval "$(pyenv init -)"
 fi
 
 ## golang
