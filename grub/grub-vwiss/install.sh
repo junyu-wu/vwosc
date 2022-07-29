@@ -190,6 +190,7 @@ grub_init() {
 		cp -a --no-preserve=ownership "${REO_DIR}/common/"{*.png,*.pf2} "${THEME_DIR}/${theme}"
 		cp -a --no-preserve=ownership "${REO_DIR}/config/theme-${screen}.txt" "${THEME_DIR}/${theme}/theme.txt"
 		cp -a --no-preserve=ownership "${REO_DIR}/backgrounds/${screen}/background-${theme}.png" "${THEME_DIR}/${theme}/background.png"
+		cp -a --no-preserve=ownership "${REO_DIR}/backgrounds/grub-background-${theme}.png" "${THEME_DIR}/${theme}/grub-background.png"
 
 		cp -a --no-preserve=ownership "${REO_DIR}/assets/assets-${icon}/icons-${screen}" "${THEME_DIR}/${theme}/icons"
 		cp -a --no-preserve=ownership "${REO_DIR}/assets/assets-select/select-${screen}/"*.png "${THEME_DIR}/${theme}"
